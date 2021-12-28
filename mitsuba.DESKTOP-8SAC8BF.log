@@ -1,0 +1,4 @@
+2021-12-28 13:14:26 INFO  main [mitsuba.cpp:256] Mitsuba version 0.5.0 (Windows, 64 bit), Copyright (c) 2014 Wenzel Jakob
+2021-12-28 13:14:26 INFO  main [SocketStream] Connecting to "DESKTOP-OVB3HMH:7554"
+2021-12-28 13:14:26 INFO  main [SocketStream] Connecting to "DESKTOP-CJ6E22V:7554"
+2021-12-28 13:14:26 INFO  main [SocketStream] Connecting to "comp9011:7554"
