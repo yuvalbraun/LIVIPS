@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<LOG_ROOT>
+	<PROJECT NAME="proj_qsys">
+		<CBX_INST_ENTRY INSTANCE_NAME="|top|nios_led:u0|nios_led_nios2_qsys_0:nios2_qsys_0|nios_led_nios2_qsys_0_nios2_oci:the_nios_led_nios2_qsys_0_nios2_oci|nios_led_nios2_qsys_0_nios2_ocimem:the_nios_led_nios2_qsys_0_nios2_ocimem|nios_led_nios2_qsys_0_ociram_sp_ram_module:nios_led_nios2_qsys_0_ociram_sp_ram|altsyncram:the_altsyncram" CBX_FILE_NAME="altsyncram_1c81.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|top|nios_led:u0|nios_led_nios2_qsys_0:nios2_qsys_0|nios_led_nios2_qsys_0_register_bank_a_module:nios_led_nios2_qsys_0_register_bank_a|altsyncram:the_altsyncram" CBX_FILE_NAME="altsyncram_tug1.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|top|nios_led:u0|nios_led_nios2_qsys_0:nios2_qsys_0|nios_led_nios2_qsys_0_register_bank_b_module:nios_led_nios2_qsys_0_register_bank_b|altsyncram:the_altsyncram" CBX_FILE_NAME="altsyncram_uug1.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|top|nios_led:u0|nios_led_onchip_memory2_0:onchip_memory2_0|altsyncram:the_altsyncram" CBX_FILE_NAME="altsyncram_dbi1.tdf"/>
+	</PROJECT>
+</LOG_ROOT>
