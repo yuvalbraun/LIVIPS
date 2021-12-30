@@ -6,30 +6,37 @@ fleshNoFlesh=0;
 ambient_light=0;
 N=8;
 R=10;
-number_of_frames=1;
+number_of_frames=3;
 irradiance=1.5;
 H=512;
 W=512;
+currnetDir = fullfile(fileparts(mfilename('fullpath')));
+topDir=extractBefore(currnetDir,"simulation");
+imagesDir=topDir + "\PSBox-v0.3.1\data\Objects";
+addpath(topDir+"image processing");
+addpath(topDir+"LIVItools");
+addpath(genpath(char(topDir+"PSBox-v0.3.1\")));
+addpath(topDir+"evaluate")
 addpath('_lib\openexr-matlab-windows\x64');
 addpath('_lib\struct2xml');
-objects_dir=pwd+"\objects\";
+addpath(genpath(topDir+"PSBox-v0.3.1"));
+objects_dir=currnetDir+"\objects\";
 objects_names= ["bunny","face"];
 object_number=1;
 object_name=objects_names(object_number)+'.obj';%todo change to ply
 object= convertStringsToChars(objects_dir+object_name);
-
-GT_dir=pwd+"\GT\";
+GT_dir=currnetDir+"\GT\";
 GT_name=objects_names(object_number)+'_GT.exr';
 GT_file= convertStringsToChars(GT_dir+GT_name);
 
-env_dir=pwd+"\env\";
+env_dir=currnetDir+"\env\";
 env_names=["pisa_diffuse","pisa","glacier_diffuse","glacier"];
 env_number=1;
 env_name=env_names(env_number)+'.hdr';
 env=convertStringsToChars(env_dir+env_name);
 % set the dir. to your Mitsuba renderer
 mitsubaDir = 'C:\mitsuba-win64\';
-xmlDir = [pwd, '\'];
+xmlDir = [currnetDir, '\'];
 xmlName = 'simulation.xml';
 
 
@@ -121,7 +128,7 @@ for i=1:N
 if fleshNoFlesh==1 
     struct2xml(xml, xmlName);
     system([mitsubaDir, 'mitsuba', ' ','-s',mitsubaDir, '\servers.txt',' ', [xmlDir, xmlName],' -q']);
-    noFleshImage=exrread('simulation.exr');
+    noFleshImage=exrread('simulation.exr'); %%%todo change to uint 8
     if number_of_frames>1
        for j=1:(number_of_frames-1) 
            system([mitsubaDir, 'mitsuba', ' ','-s',mitsubaDir, '\servers.txt',' ', [xmlDir, xmlName],' -q']);
@@ -143,12 +150,13 @@ for i=1:N
     xml.scene.emitter{1,i}.float.Attributes.value = '1';%num2str(normrnd(1,0.1));
     struct2xml(xml, xmlName);
     system([mitsubaDir, 'mitsuba', ' ','-s',mitsubaDir, '\servers.txt',' ', [xmlDir, xmlName],' -q']);
-    image=exrread('simulation.exr');
-    image=rgb2gray(image);
+    newImage=uint8(rgb2gray(exrread('simulation.exr'))*256);%%%image in 8bit 
+    image=double(newImage); %% convert to double for avareging
     if number_of_frames>1
        for j=1:(number_of_frames-1)
            system([mitsubaDir, 'mitsuba', ' ','-s',mitsubaDir, '\servers.txt',' ', [xmlDir, xmlName],' -q']);
-           image=image+rgb2gray(exrread('simulation.exr'));
+           newImage=uint8(rgb2gray(exrread('simulation.exr'))*256);
+           image=image+double(newImage);
        end
            image=image/number_of_frames;
     end
@@ -159,10 +167,11 @@ for i=1:N
     %image=rgb2gray(image);
     image=mask.*image;
 
-    imwrite(image,"C:\Users\yuval\Documents\meitar\LIVIPS\PSBox-v0.3.1\data\Objects\image_0"+num2str(i)+".png");  
-    imwrite(double(image),"C:\Users\yuval\Documents\meitar\LIVIPS\PSBox-v0.3.1\data\Objects\image_0"+num2str(i)+".tiff");    
+    imwrite(image,imagesDir + "\image_0"+num2str(i)+".png");  
+    imwrite(double(image/256),imagesDir + "\image_0"+num2str(i)+".tiff");
+    save(imagesDir + "\image_0"+num2str(i),'image');
 end
- dlmwrite(' C:\Users\yuval\Documents\meitar\LIVIPS\PSBox-v0.3.1\data\light_directions.txt', directions, ...
+ dlmwrite(topDir +"PSBox-v0.3.1\data\light_directions.txt", directions, ...
     'delimiter', ' ', 'precision', '%20.16f');
 demoPSBox;
 GT=exrread(GT_file);

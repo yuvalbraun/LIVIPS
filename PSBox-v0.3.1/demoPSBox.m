@@ -70,7 +70,7 @@ L = textread(fullfile(topDir, 'light_directions.txt'));
 % Load images.
 loadOpts = struct('ImageChannel', imgChannel, ...
                   'NormalizePercentile', 99);
-I = PSLoadProcessedImages(fullfile(topDir, 'Objects'), rawOutSuffix, loadOpts);
+I = PSLoadProcessedImagesMat(fullfile(topDir, 'Objects'), rawOutSuffix, loadOpts);%todo change this
 nImgs = size(I, 3);
 % Create a shadow mask.
 shadow_mask = (I > shadowThresh);

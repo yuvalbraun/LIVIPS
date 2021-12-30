@@ -13,28 +13,35 @@ T=1/FPS;
 lower_freq=70;
 upper_freq=180;
 irradiance=0.5;
-
+currnetDir = fullfile(fileparts(mfilename('fullpath')));
+topDir=extractBefore(currnetDir,"simulation");
+imagesDir=topDir + "\PSBox-v0.3.1\data\Objects";
+addpath(topDir+"image processing");
+addpath(topDir+"LIVItools");
+addpath(genpath(char(topDir+"PSBox-v0.3.1\")));
+addpath(topDir+"evaluate")
 addpath('_lib\openexr-matlab-windows\x64');
 addpath('_lib\struct2xml');
-objects_dir=pwd+"\objects\";
+addpath(genpath(topDir+"PSBox-v0.3.1"));
+objects_dir=currnetDir+"\objects\";
 objects_names= ["bunny","face"];
 object_number=1;
-object_name=objects_names(object_number)+'.obj';
+object_name=objects_names(object_number)+'.obj';%todo change to ply
 object= convertStringsToChars(objects_dir+object_name);
-
-GT_dir=pwd+"\GT\";
+GT_dir=currnetDir+"\GT\";
 GT_name=objects_names(object_number)+'_GT.exr';
 GT_file= convertStringsToChars(GT_dir+GT_name);
 
-env_dir=pwd+"\env\";
+env_dir=currnetDir+"\env\";
 env_names=["pisa_diffuse","pisa","glacier_diffuse","glacier"];
 env_number=1;
 env_name=env_names(env_number)+'.hdr';
 env=convertStringsToChars(env_dir+env_name);
 % set the dir. to your Mitsuba renderer
 mitsubaDir = 'C:\mitsuba-win64\';
-xmlDir = [pwd, '\'];
+xmlDir = [currnetDir, '\'];
 xmlName = 'simulation.xml';
+
 
 
 
@@ -135,9 +142,9 @@ for i=1:nFrames
     image=exrread('simulation.exr');
     image=rgb2gray(image);
     image=mask.*image;
-    mov(:,:,:,i)=image;
+    mov(:,:,:,i)=uint8(image*256); %%todo check this
 end
-dlmwrite('C:\Users\yuval\Documents\meitar\LIVIPS\PSBox-v0.3.1\data\light_directions.txt', directions, ...
+dlmwrite(topDir + "PSBox-v0.3.1\data\light_directions.txt", directions, ...
         'delimiter', ' ', 'precision', '%20.16f');
 save('mov','mov');
 %% perform Livi
@@ -145,7 +152,10 @@ save('mov','mov');
 MovMeanRaw=mean(double(mov(:,:,1,:)*255),4);
 for i=1:N
 [ image,~] = ReconstructModulatedLightFastRaw( mov,Base(i,:),0 );
- imwrite(image,"C:\Users\yuval\Documents\meitar\LIVIPS\PSBox-v0.3.1\data\Objects\image_"+num2str(i,'%02.f')+".png");    
+    imwrite(image,imagesDir + "\image_0"+num2str(i)+".png");  
+    imwrite(double(image/256),imagesDir + "\image_0"+num2str(i)+".tiff");
+    save(imagesDir + "\image_0"+num2str(i),'image');
+
 end
 demoPSBox;
 
