@@ -1,7 +1,7 @@
 close all;
 clear;
 clc;
-%% define parameters
+%% choose parameters for simulation
 ambient_light=0;
 N=8;
 R=10;
@@ -13,6 +13,9 @@ T=1/FPS;
 lower_freq=70;
 upper_freq=180;
 irradiance=0.5;
+noise_level=0.008;
+servers=0;  % set to 1 only when "servers.txt" exsigists
+%% set dir and path
 currnetDir = fullfile(fileparts(mfilename('fullpath')));
 topDir=extractBefore(currnetDir,"simulation");
 imagesDir=topDir + "\PSBox-v0.3.1\data\Objects";
@@ -41,6 +44,12 @@ env=convertStringsToChars(env_dir+env_name);
 mitsubaDir = 'C:\mitsuba-win64\';
 xmlDir = [currnetDir, '\'];
 xmlName = 'simulation.xml';
+
+if servers==1
+    serversString=['-s ',mitsubaDir, '\servers.txt',' ',];
+else
+    serversString='';
+end
 
 
 
@@ -112,7 +121,7 @@ xml.scene.emitter=sources_cell;
 xml.scene.shape.string.Attributes.value=object;
 %% crate mask
 struct2xml(xml, xmlName);
-system([mitsubaDir, 'mitsuba', ' ','-s',mitsubaDir, '\servers.txt',' ', [xmlDir, xmlName],' -q']);
+system([mitsubaDir, 'mitsuba', ' ',serversString, [xmlDir, xmlName],' -q']);
 mask=exrread('simulation.exr');
 mask=rgb2gray(mask);
 mask=mask~=0;
@@ -138,9 +147,10 @@ for i=1:nFrames
         xml.scene.emitter{1,j}.spectrum.Attributes.value = num2str(irradiance*Base(j,i));
     end
     struct2xml(xml, xmlName);
-    system([mitsubaDir, 'mitsuba', ' ','-s',mitsubaDir, '\servers.txt',' ', [xmlDir, xmlName],' -q']);
+    system([mitsubaDir, 'mitsuba', ' ',serversString, [xmlDir, xmlName],' -q']);
     image=exrread('simulation.exr');
     image=rgb2gray(image);
+    image=imnoise(image,'gaussian',0,noise_level^2);
     image=mask.*image;
     mov(:,:,:,i)=uint8(image*256); %%todo check this
 end

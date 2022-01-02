@@ -2,14 +2,20 @@
 close all;
 clear;
 clc;
+%% choose parameters for simulation
 fleshNoFlesh=0;
 ambient_light=0;
 N=8;
 R=10;
-number_of_frames=3;
+number_of_frames=1;
 irradiance=1.5;
 H=512;
 W=512;
+servers=1; % set to 1 only when "servers.txt" exsists
+samples_per_frame=512;
+noise_level=0.008;
+
+%% set dir and path
 currnetDir = fullfile(fileparts(mfilename('fullpath')));
 topDir=extractBefore(currnetDir,"simulation");
 imagesDir=topDir + "\PSBox-v0.3.1\data\Objects";
@@ -39,7 +45,11 @@ mitsubaDir = 'C:\mitsuba-win64\';
 xmlDir = [currnetDir, '\'];
 xmlName = 'simulation.xml';
 
-
+if servers==1
+    serversString=['-s',mitsubaDir, '\servers.txt',' ',];
+else
+    serversString='';
+end
 
 
 
@@ -66,6 +76,9 @@ camVec = mitsubaViewMatrix';
 %% set resolution
 xml.scene.sensor.film.integer{1, 1}.Attributes.value=H;
 xml.scene.sensor.film.integer{1, 2}.Attributes.value=W;
+
+%% set number of samples per frame
+xml.scene.sensor.sampler.integer.Attributes.value = samples_per_frame;
 
 %% camrea location
 camera_locations_str = split(xml.scene.sensor.transform.lookat.Attributes.origin,',');
@@ -111,7 +124,7 @@ xml.scene.shape.string.Attributes.value=object;
 
 %% crate mask
 struct2xml(xml, xmlName);
-system([mitsubaDir, 'mitsuba', ' ','-s',mitsubaDir, '\servers.txt',' ', [xmlDir, xmlName],' -q']);
+system([mitsubaDir, 'mitsuba', ' ',serversString, [xmlDir, xmlName],' -q']);
 mask=exrread('simulation.exr');
 mask=rgb2gray(mask);
 mask=mask~=0;
@@ -127,11 +140,11 @@ for i=1:N
 %% No flesh
 if fleshNoFlesh==1 
     struct2xml(xml, xmlName);
-    system([mitsubaDir, 'mitsuba', ' ','-s',mitsubaDir, '\servers.txt',' ', [xmlDir, xmlName],' -q']);
-    noFleshImage=exrread('simulation.exr'); %%%todo change to uint 8
+    system([mitsubaDir, 'mitsuba', ' ',serversString, [xmlDir, xmlName],' -q']);
+    noFleshImage=exrread('simulation.exr'); %%%todo change to uint 8 and add noise
     if number_of_frames>1
        for j=1:(number_of_frames-1) 
-           system([mitsubaDir, 'mitsuba', ' ','-s',mitsubaDir, '\servers.txt',' ', [xmlDir, xmlName],' -q']);
+           system([mitsubaDir, 'mitsuba', ' ',serversString, [xmlDir, xmlName],' -q']);
            noFleshImage=noFleshImage+exrread('simulation.exr');
        end
      noFleshImage=noFleshImage/number_of_frames;
@@ -149,14 +162,22 @@ for i=1:N
     xml.scene.emitter{1,i}.float.Attributes.name = 'scale';
     xml.scene.emitter{1,i}.float.Attributes.value = '1';%num2str(normrnd(1,0.1));
     struct2xml(xml, xmlName);
-    system([mitsubaDir, 'mitsuba', ' ','-s',mitsubaDir, '\servers.txt',' ', [xmlDir, xmlName],' -q']);
-    newImage=uint8(rgb2gray(exrread('simulation.exr'))*256);%%%image in 8bit 
-    image=double(newImage); %% convert to double for avareging
+    system([mitsubaDir, 'mitsuba', ' ',serversString, [xmlDir, xmlName],' -q']);
+    newImage=rgb2gray(exrread('simulation.exr'));
+    if noise_level>0
+        newImage = imnoise(newImage,'gaussian',0,noise_level^2); % Gaussian white noise with mean 0 and variance noise_level.
+    end
+    newImage_8bit=uint8(newImage*256);%%%image in 8bit 
+    image=double(newImage_8bit); %% convert to double for avareging
     if number_of_frames>1
        for j=1:(number_of_frames-1)
-           system([mitsubaDir, 'mitsuba', ' ','-s',mitsubaDir, '\servers.txt',' ', [xmlDir, xmlName],' -q']);
-           newImage=uint8(rgb2gray(exrread('simulation.exr'))*256);
-           image=image+double(newImage);
+           system([mitsubaDir, 'mitsuba', ' ',serversString, [xmlDir, xmlName],' -q']);
+           newImage=rgb2gray(exrread('simulation.exr'));
+           if noise_level>0
+              newImage = imnoise(newImage,'gaussian',0,noise_level^2); % Gaussian white noise with mean 0 and variance noise_level.
+           end
+           newImage_8bit=uint8(newImage*256);%%%image in 8bit 
+           image=image+double(newImage_8bit);
        end
            image=image/number_of_frames;
     end
