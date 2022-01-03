@@ -1,37 +1,37 @@
-2022-01-02 18:14:30 INFO  main [mitsuba.cpp:256] Mitsuba version 0.5.0 (Windows, 64 bit), Copyright (c) 2014 Wenzel Jakob
-2022-01-02 18:14:30 INFO  main [SocketStream] Connecting to "DESKTOP-OVB3HMH:7554"
-2022-01-02 18:14:30 INFO  main [SocketStream] Connecting to "DESKTOP-CJ6E22V:7554"
-2022-01-02 18:14:30 INFO  main [SocketStream] Connecting to "comp9011:7554"
-2022-01-02 18:14:31 INFO  main [mitsuba.cpp:356] Parsing scene description from "C:\Users\yuval\Documents\meitar\LIVIPS_code\LIVIPS\simulation\generic\simulation.xml" ..
-2022-01-02 18:14:31 INFO  main [PluginManager] Loading plugin "plugins\path.dll" ..
-2022-01-02 18:14:31 INFO  main [PluginManager] Loading plugin "plugins\diffuse.dll" ..
-2022-01-02 18:14:31 INFO  main [PluginManager] Loading plugin "plugins\obj.dll" ..
-2022-01-02 18:14:31 INFO  main [WavefrontOBJ] Loading geometry from "bunny.obj" ..
-2022-01-02 18:14:33 INFO  main [WavefrontOBJ] bunny: 69451 triangles, 34834 vertices (merged 173519 vertices).
-2022-01-02 18:14:33 INFO  main [WavefrontOBJ] Done with "bunny.obj" (took 2167 ms)
-2022-01-02 18:14:33 WARN  main [scenehandler.cpp:795] In file "C:\Users\yuval\Documents\meitar\LIVIPS_code\LIVIPS\simulation\generic\simulation.xml" (near line 12): Unqueried attribute "shapeIndex" in element "shape"
-2022-01-02 18:14:33 INFO  main [PluginManager] Loading plugin "plugins\ldsampler.dll" ..
-2022-01-02 18:14:33 INFO  main [PluginManager] Loading plugin "plugins\gaussian.dll" ..
-2022-01-02 18:14:33 INFO  main [PluginManager] Loading plugin "plugins\hdrfilm.dll" ..
-2022-01-02 18:14:33 WARN  main [scenehandler.cpp:795] In file "C:\Users\yuval\Documents\meitar\LIVIPS_code\LIVIPS\simulation\generic\simulation.xml" (near line 27): Unqueried attribute "exposure" in element "film"
-2022-01-02 18:14:33 WARN  main [scenehandler.cpp:795] In file "C:\Users\yuval\Documents\meitar\LIVIPS_code\LIVIPS\simulation\generic\simulation.xml" (near line 27): Unqueried attribute "gamma" in element "film"
-2022-01-02 18:14:33 WARN  main [scenehandler.cpp:795] In file "C:\Users\yuval\Documents\meitar\LIVIPS_code\LIVIPS\simulation\generic\simulation.xml" (near line 27): Unqueried attribute "tonemapMethod" in element "film"
-2022-01-02 18:14:33 INFO  main [PluginManager] Loading plugin "plugins\orthographic.dll" ..
-2022-01-02 18:14:33 INFO  main [PluginManager] Loading plugin "plugins\directional.dll" ..
-2022-01-02 18:14:33 WARN  main [scenehandler.cpp:795] In file "C:\Users\yuval\Documents\meitar\LIVIPS_code\LIVIPS\simulation\generic\simulation.xml" (near line 33): Unqueried attribute "scale" in element "emitter"
-2022-01-02 18:14:33 WARN  main [scenehandler.cpp:795] In file "C:\Users\yuval\Documents\meitar\LIVIPS_code\LIVIPS\simulation\generic\simulation.xml" (near line 38): Unqueried attribute "scale" in element "emitter"
-2022-01-02 18:14:33 WARN  main [scenehandler.cpp:795] In file "C:\Users\yuval\Documents\meitar\LIVIPS_code\LIVIPS\simulation\generic\simulation.xml" (near line 43): Unqueried attribute "scale" in element "emitter"
-2022-01-02 18:14:33 WARN  main [scenehandler.cpp:795] In file "C:\Users\yuval\Documents\meitar\LIVIPS_code\LIVIPS\simulation\generic\simulation.xml" (near line 48): Unqueried attribute "scale" in element "emitter"
-2022-01-02 18:14:33 WARN  main [scenehandler.cpp:795] In file "C:\Users\yuval\Documents\meitar\LIVIPS_code\LIVIPS\simulation\generic\simulation.xml" (near line 53): Unqueried attribute "scale" in element "emitter"
-2022-01-02 18:14:33 WARN  main [scenehandler.cpp:795] In file "C:\Users\yuval\Documents\meitar\LIVIPS_code\LIVIPS\simulation\generic\simulation.xml" (near line 58): Unqueried attribute "scale" in element "emitter"
-2022-01-02 18:14:33 WARN  main [scenehandler.cpp:795] In file "C:\Users\yuval\Documents\meitar\LIVIPS_code\LIVIPS\simulation\generic\simulation.xml" (near line 63): Unqueried attribute "scale" in element "emitter"
-2022-01-02 18:14:33 WARN  main [scenehandler.cpp:795] In file "C:\Users\yuval\Documents\meitar\LIVIPS_code\LIVIPS\simulation\generic\simulation.xml" (near line 68): Unqueried attribute "scale" in element "emitter"
-2022-01-02 18:14:33 INFO  ren0 [KDTreeBase] Constructing a SAH kd-tree (69451 primitives) ..
-2022-01-02 18:14:33 INFO  ren0 [KDTreeBase] Finished -- took 551 ms.
-2022-01-02 18:14:33 INFO  ren0 [SamplingIntegrator] Starting render job (512x512, 512 samples, 26 cores, SSE2 enabled) ..
-2022-01-02 18:14:48 INFO  ren0 [RenderJob] Render time: 14.9570s
-2022-01-02 18:14:48 INFO  ren0 [HDRFilm] Writing image to "C:\Users\yuval\Documents\meitar\LIVIPS_code\LIVIPS\simulation\generic\simulation.exr" ..
-2022-01-02 18:14:48 INFO  main [statistics.cpp:142] Statistics:
+2022-01-03 18:21:38 INFO  main [mitsuba.cpp:256] Mitsuba version 0.5.0 (Windows, 64 bit), Copyright (c) 2014 Wenzel Jakob
+2022-01-03 18:21:38 INFO  main [SocketStream] Connecting to "DESKTOP-OVB3HMH:7554"
+2022-01-03 18:21:39 INFO  main [SocketStream] Connecting to "DESKTOP-CJ6E22V:7554"
+2022-01-03 18:21:39 INFO  main [SocketStream] Connecting to "comp9011:7554"
+2022-01-03 18:21:39 INFO  main [mitsuba.cpp:356] Parsing scene description from "C:\Users\yuval\Documents\meitar\LIVIPS_code\LIVIPS\simulation\generic\simulation.xml" ..
+2022-01-03 18:21:39 INFO  main [PluginManager] Loading plugin "plugins\path.dll" ..
+2022-01-03 18:21:39 INFO  main [PluginManager] Loading plugin "plugins\diffuse.dll" ..
+2022-01-03 18:21:39 INFO  main [PluginManager] Loading plugin "plugins\obj.dll" ..
+2022-01-03 18:21:39 INFO  main [WavefrontOBJ] Loading geometry from "buddha.obj" ..
+2022-01-03 18:21:48 INFO  main [WavefrontOBJ] buddha: 293232 triangles, 144628 vertices (merged 735068 vertices).
+2022-01-03 18:21:48 INFO  main [WavefrontOBJ] Done with "buddha.obj" (took 9339 ms)
+2022-01-03 18:21:48 WARN  main [scenehandler.cpp:795] In file "C:\Users\yuval\Documents\meitar\LIVIPS_code\LIVIPS\simulation\generic\simulation.xml" (near line 12): Unqueried attribute "shapeIndex" in element "shape"
+2022-01-03 18:21:48 INFO  main [PluginManager] Loading plugin "plugins\ldsampler.dll" ..
+2022-01-03 18:21:48 INFO  main [PluginManager] Loading plugin "plugins\gaussian.dll" ..
+2022-01-03 18:21:48 INFO  main [PluginManager] Loading plugin "plugins\hdrfilm.dll" ..
+2022-01-03 18:21:48 WARN  main [scenehandler.cpp:795] In file "C:\Users\yuval\Documents\meitar\LIVIPS_code\LIVIPS\simulation\generic\simulation.xml" (near line 27): Unqueried attribute "exposure" in element "film"
+2022-01-03 18:21:48 WARN  main [scenehandler.cpp:795] In file "C:\Users\yuval\Documents\meitar\LIVIPS_code\LIVIPS\simulation\generic\simulation.xml" (near line 27): Unqueried attribute "gamma" in element "film"
+2022-01-03 18:21:48 WARN  main [scenehandler.cpp:795] In file "C:\Users\yuval\Documents\meitar\LIVIPS_code\LIVIPS\simulation\generic\simulation.xml" (near line 27): Unqueried attribute "tonemapMethod" in element "film"
+2022-01-03 18:21:48 INFO  main [PluginManager] Loading plugin "plugins\orthographic.dll" ..
+2022-01-03 18:21:48 INFO  main [PluginManager] Loading plugin "plugins\directional.dll" ..
+2022-01-03 18:21:48 WARN  main [scenehandler.cpp:795] In file "C:\Users\yuval\Documents\meitar\LIVIPS_code\LIVIPS\simulation\generic\simulation.xml" (near line 33): Unqueried attribute "scale" in element "emitter"
+2022-01-03 18:21:48 WARN  main [scenehandler.cpp:795] In file "C:\Users\yuval\Documents\meitar\LIVIPS_code\LIVIPS\simulation\generic\simulation.xml" (near line 38): Unqueried attribute "scale" in element "emitter"
+2022-01-03 18:21:48 WARN  main [scenehandler.cpp:795] In file "C:\Users\yuval\Documents\meitar\LIVIPS_code\LIVIPS\simulation\generic\simulation.xml" (near line 43): Unqueried attribute "scale" in element "emitter"
+2022-01-03 18:21:48 WARN  main [scenehandler.cpp:795] In file "C:\Users\yuval\Documents\meitar\LIVIPS_code\LIVIPS\simulation\generic\simulation.xml" (near line 48): Unqueried attribute "scale" in element "emitter"
+2022-01-03 18:21:48 WARN  main [scenehandler.cpp:795] In file "C:\Users\yuval\Documents\meitar\LIVIPS_code\LIVIPS\simulation\generic\simulation.xml" (near line 53): Unqueried attribute "scale" in element "emitter"
+2022-01-03 18:21:48 WARN  main [scenehandler.cpp:795] In file "C:\Users\yuval\Documents\meitar\LIVIPS_code\LIVIPS\simulation\generic\simulation.xml" (near line 58): Unqueried attribute "scale" in element "emitter"
+2022-01-03 18:21:48 WARN  main [scenehandler.cpp:795] In file "C:\Users\yuval\Documents\meitar\LIVIPS_code\LIVIPS\simulation\generic\simulation.xml" (near line 63): Unqueried attribute "scale" in element "emitter"
+2022-01-03 18:21:48 WARN  main [scenehandler.cpp:795] In file "C:\Users\yuval\Documents\meitar\LIVIPS_code\LIVIPS\simulation\generic\simulation.xml" (near line 68): Unqueried attribute "scale" in element "emitter"
+2022-01-03 18:21:48 INFO  ren0 [KDTreeBase] Constructing a SAH kd-tree (293232 primitives) ..
+2022-01-03 18:21:50 INFO  ren0 [KDTreeBase] Finished -- took 1442 ms.
+2022-01-03 18:21:50 INFO  ren0 [SamplingIntegrator] Starting render job (512x512, 512 samples, 26 cores, SSE2 enabled) ..
+2022-01-03 18:22:07 INFO  ren0 [RenderJob] Render time: 18.9980s
+2022-01-03 18:22:07 INFO  ren0 [HDRFilm] Writing image to "C:\Users\yuval\Documents\meitar\LIVIPS_code\LIVIPS\simulation\generic\simulation.exr" ..
+2022-01-03 18:22:07 INFO  main [statistics.cpp:142] Statistics:
 ------------------------------------------------------------
  * Loaded plugins :
     -  plugins\diffuse.dll [Smooth diffuse BRDF]
@@ -44,13 +44,13 @@
     -  plugins\path.dll [MI path tracer]
 
   * General :
-    -  Normal rays traced : 34.997 M
-    -  Shadow rays traced : 10.408 M
+    -  Normal rays traced : 37.903 M
+    -  Shadow rays traced : 10.192 M
 
   * Network :
-    -  Bytes received : 5.422 M
-    -  Bytes sent : 5.094 M
+    -  Bytes received : 5.266 M
+    -  Bytes sent : 21.055 M
 
   * Path tracer :
-    -  Average path length : 1.05 (25.87 M / 24.64 M)
+    -  Average path length : 1.10 (30.60 M / 27.79 M)
 ------------------------------------------------------------

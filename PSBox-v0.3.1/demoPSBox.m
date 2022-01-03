@@ -108,7 +108,7 @@ dlmwrite(fullfile(topDir, 'refined_light.txt'), L, 'precision', '%20.16f');
 Ierr = EvalNEstimateByIError(rho, n, I, shadow_mask, L, evalOpts);
 
 %% Visualize the normal map.
-figure; imshow(n); axis xy;title("normal map");
+figure; imshow(normalmap_to_RBG(n)); axis xy;title("normal map");
 
 
 %% Estimate depth map from the normal vectors.

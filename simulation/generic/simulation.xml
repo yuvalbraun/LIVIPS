@@ -3,16 +3,16 @@
    <integrator type="path"/>
    <shape id="mesh" type="obj">
       <string name="filename"
-              value="C:\Users\yuval\Documents\meitar\LIVIPS_code\LIVIPS\simulation\generic\objects\bunny.obj"/>
+              value="C:\Users\yuval\Documents\meitar\LIVIPS_code\LIVIPS\simulation\generic\objects\buddha.obj"/>
       <integer name="shapeIndex" value="0"/>
       <bsdf type="diffuse"/>
       <transform name="toWorld">
-         <scale value="10"/>
+         <scale value="9"/>
       </transform>
    </shape>
    <sensor type="orthographic">
       <transform name="toWorld">
-         <lookat origin="-0.2, 1, 50" target="-0.2, 1, 49" up="0, 1, 0"/>
+         <lookat origin="0, 1.3, 50" target="0, 1.3, 49" up="0, 1, 0"/>
       </transform>
       <sampler type="ldsampler">
          <integer name="sampleCount" value="512"/>
@@ -27,42 +27,42 @@
       </film>
    </sensor>
    <emitter type="directional">
-      <vector name="direction" x="-0.19623" y="0" z="-0.98114"/>
+      <vector name="direction" x="-0.19605" y="0" z="-0.98026"/>
       <spectrum name="irradiance" value="0"/>
       <float name="scale" value="1"/>
    </emitter>
    <emitter type="directional">
-      <vector name="direction" x="-0.13835" y="-0.13835" z="-0.97826"/>
+      <vector name="direction" x="-0.13814" y="-0.13814" z="-0.97682"/>
       <spectrum name="irradiance" value="0"/>
       <float name="scale" value="1"/>
    </emitter>
    <emitter type="directional">
-      <vector name="direction" x="-1.1927e-17" y="-0.19533" z="-0.97664"/>
+      <vector name="direction" x="-1.1945e-17" y="-0.19508" z="-0.9754"/>
       <spectrum name="irradiance" value="0"/>
       <float name="scale" value="1"/>
    </emitter>
    <emitter type="directional">
-      <vector name="direction" x="0.1382" y="-0.1382" z="-0.9772"/>
+      <vector name="direction" x="0.13814" y="-0.13814" z="-0.97682"/>
       <spectrum name="irradiance" value="0"/>
       <float name="scale" value="1"/>
    </emitter>
    <emitter type="directional">
-      <vector name="direction" x="0.19593" y="-2.6103e-17" z="-0.97963"/>
+      <vector name="direction" x="0.19605" y="-2.6119e-17" z="-0.98026"/>
       <spectrum name="irradiance" value="0"/>
       <float name="scale" value="1"/>
    </emitter>
    <emitter type="directional">
-      <vector name="direction" x="0.13895" y="0.13895" z="-0.98252"/>
+      <vector name="direction" x="0.13912" y="0.13912" z="-0.98374"/>
       <spectrum name="irradiance" value="0"/>
       <float name="scale" value="1"/>
    </emitter>
    <emitter type="directional">
-      <vector name="direction" x="3.6058e-17" y="0.19684" z="-0.98418"/>
+      <vector name="direction" x="3.6196e-17" y="0.19704" z="-0.9852"/>
       <spectrum name="irradiance" value="0"/>
       <float name="scale" value="1"/>
    </emitter>
    <emitter type="directional">
-      <vector name="direction" x="-0.1391" y="0.1391" z="-0.9836"/>
+      <vector name="direction" x="-0.13912" y="0.13912" z="-0.98374"/>
       <spectrum name="irradiance" value="1.5"/>
       <float name="scale" value="1"/>
    </emitter>
