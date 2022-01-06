@@ -13,8 +13,10 @@ T=1/FPS;
 lower_freq=70;
 upper_freq=180;
 irradiance=0.5;
-noise_level=0.008;
-servers=0;  % set to 1 only when "servers.txt" exsigists
+samples_per_frame=256;
+noise_level=0;
+servers=1;  % set to 1 only when "servers.txt" exsigists
+object_number=2; %% choose object
 %% set dir and path
 currnetDir = fullfile(fileparts(mfilename('fullpath')));
 topDir=extractBefore(currnetDir,"simulation");
@@ -27,8 +29,11 @@ addpath('_lib\openexr-matlab-windows\x64');
 addpath('_lib\struct2xml');
 addpath(genpath(topDir+"PSBox-v0.3.1"));
 objects_dir=currnetDir+"\objects\";
-objects_names= ["bunny","face"];
-object_number=1;
+objects_names= ["bunny","buddha"];
+scales=[10,9];
+camera_locs= [-0.2 1 50; 0 1.3 50];
+object_scales=[10,8];
+camera_loc = camera_locs(object_number,:);
 object_name=objects_names(object_number)+'.obj';%todo change to ply
 object= convertStringsToChars(objects_dir+object_name);
 GT_dir=currnetDir+"\GT\";
@@ -78,7 +83,13 @@ camVec = mitsubaViewMatrix';
 xml.scene.sensor.film.integer{1, 1}.Attributes.value=H;
 xml.scene.sensor.film.integer{1, 2}.Attributes.value=W; 
 %xml.scene.sensor.transform.matrix.Attributes.value = num2str(camVec(:)');
+%% set number of samples per frame
+xml.scene.sensor.sampler.integer.Attributes.value = samples_per_frame;
+
 %% camrea location
+xml.scene.sensor.transform.lookat.Attributes.origin = char(string(camera_loc(1))+", "+ string(camera_loc(2))+", " +string(camera_loc(3)));
+xml.scene.sensor.transform.lookat.Attributes.target = char(string(camera_loc(1))+", "+ string(camera_loc(2))+", " +string(camera_loc(3)-1));
+
 camera_locations_str = split(xml.scene.sensor.transform.lookat.Attributes.origin,',');
 x=str2num(camera_locations_str{1});
 y=str2num(camera_locations_str{2});
