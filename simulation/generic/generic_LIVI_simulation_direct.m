@@ -16,7 +16,7 @@ irradiance=0.5;
 samples_per_frame=256;
 noise_level=0;
 servers=1;  % set to 1 only when "servers.txt" exsigists
-object_number=2; %% choose object
+object_number=1; %% choose object
 %% set dir and path
 currnetDir = fullfile(fileparts(mfilename('fullpath')));
 topDir=extractBefore(currnetDir,"simulation");

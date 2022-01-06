@@ -3,18 +3,18 @@ close all;
 clear;
 clc;
 %% choose parameters for simulation
-fleshNoFlesh=0;
-ambient_light=0;
+fleshNoFlesh=1;
+ambient_light=1;
 N=8;
 R=10;
-number_of_frames=5;
+number_of_frames=1;
 irradiance=1.5;
 H=512;
 W=512;
 servers=1; % set to 1 only when "servers.txt" exsists
 samples_per_frame=512;
-noise_level=0;
-object_number=2; %% choose object
+noise_level=0.008;
+object_number=1; %% choose object
 
 %% set dir and path
 currnetDir = fullfile(fileparts(mfilename('fullpath')));
@@ -147,12 +147,25 @@ for i=1:N
 if fleshNoFlesh==1 
     struct2xml(xml, xmlName);
     system([mitsubaDir, 'mitsuba', ' ',serversString, [xmlDir, xmlName],' -q']);
-    noFleshImage=exrread('simulation.exr'); %%%todo change to uint 8 and add noise
+    noFleshImage=rgb2gray(exrread('simulation.exr')); %%%todo change to uint 8 and add noise
+    if noise_level>0
+        noFleshImage = imnoise(noFleshImage,'gaussian',0,noise_level^2); % Gaussian white noise with mean 0 and variance noise_level.
+    end
+    noFleshImage_8bit=uint8(noFleshImage*256);%%%image in 8bit 
+    noFleshImage=double(noFleshImage_8bit); %% convert to double for avareging
     if number_of_frames>1
        for j=1:(number_of_frames-1) 
            system([mitsubaDir, 'mitsuba', ' ',serversString, [xmlDir, xmlName],' -q']);
-           noFleshImage=noFleshImage+exrread('simulation.exr');
+           newImage=rgb2gray(exrread('simulation.exr')); %%%todo change to uint 8 and add noise
+           if noise_level>0
+                 newImage = imnoise(newImage,'gaussian',0,noise_level^2); % Gaussian white noise with mean 0 and variance noise_level.
+           end
+            newImage_8bit=uint8(newImage*256);%%%image in 8bit 
+            newImage=double(newImage_8bit); %% convert to double for avareging
+
+           noFleshImage=noFleshImage+newImage;
        end
+       
      noFleshImage=noFleshImage/number_of_frames;
     end
 
