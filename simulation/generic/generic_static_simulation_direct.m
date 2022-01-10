@@ -3,27 +3,29 @@ close all;
 clear;
 clc;
 %% choose parameters for simulation
-fleshNoFlesh=1;
-ambient_light=1;
+fleshNoFlesh=0;
+ambient_light=0;
 N=8;
 R=10;
-number_of_frames=1;
-irradiance=1.5;
+number_of_frames=45;
+irradiance=0.5;
 H=512;
 W=512;
 servers=1; % set to 1 only when "servers.txt" exsists
 samples_per_frame=512;
-noise_level=0.008;
+noise_level=0;
 object_number=1; %% choose object
+total_frames=(N+fleshNoFlesh)*number_of_frames;
 
 %% set dir and path
 currnetDir = fullfile(fileparts(mfilename('fullpath')));
 topDir=extractBefore(currnetDir,"simulation");
 imagesDir=topDir + "\PSBox-v0.3.1\data\Objects";
+resultsDir=currnetDir+"\results";
 addpath(topDir+"image processing");
 addpath(topDir+"LIVItools");
 addpath(genpath(char(topDir+"PSBox-v0.3.1\")));
-addpath(topDir+"evaluate")
+addpath(topDir+"evaluate");
 addpath('_lib\openexr-matlab-windows\x64');
 addpath('_lib\struct2xml');
 addpath(genpath(topDir+"PSBox-v0.3.1"));
@@ -153,8 +155,9 @@ if fleshNoFlesh==1
     end
     noFleshImage_8bit=uint8(noFleshImage*256);%%%image in 8bit 
     noFleshImage=double(noFleshImage_8bit); %% convert to double for avareging
+     fprintf('finished: %d %%\n',uint8((fleshNoFlesh)/total_frames*100)); %for display
     if number_of_frames>1
-       for j=1:(number_of_frames-1) 
+       for j=2:(number_of_frames) 
            system([mitsubaDir, 'mitsuba', ' ',serversString, [xmlDir, xmlName],' -q']);
            newImage=rgb2gray(exrread('simulation.exr')); %%%todo change to uint 8 and add noise
            if noise_level>0
@@ -164,6 +167,8 @@ if fleshNoFlesh==1
             newImage=double(newImage_8bit); %% convert to double for avareging
 
            noFleshImage=noFleshImage+newImage;
+           fprintf('finished: %d %%\n',uint8(j/total_frames*100)); %for display
+
        end
        
      noFleshImage=noFleshImage/number_of_frames;
@@ -188,8 +193,9 @@ for i=1:N
     end
     newImage_8bit=uint8(newImage*256);%%%image in 8bit 
     image=double(newImage_8bit); %% convert to double for avareging
+    fprintf('finished: %d %%\n',uint8(((i-1+fleshNoFlesh)*number_of_frames+1)/total_frames*100)); %for display
     if number_of_frames>1
-       for j=1:(number_of_frames-1)
+       for j=2:(number_of_frames)
            system([mitsubaDir, 'mitsuba', ' ',serversString, [xmlDir, xmlName],' -q']);
            newImage=rgb2gray(exrread('simulation.exr'));
            if noise_level>0
@@ -197,8 +203,9 @@ for i=1:N
            end
            newImage_8bit=uint8(newImage*256);%%%image in 8bit 
            image=image+double(newImage_8bit);
+           fprintf('finished: %d %%\n',uint8(((i-1+fleshNoFlesh)*number_of_frames+j)/total_frames*100)); %for display
        end
-           image=image/number_of_frames;
+       image=image/number_of_frames;
     end
 
     if fleshNoFlesh==1  
@@ -232,3 +239,4 @@ histogram(degrees);
 xlabel('angular error [degrees]');
 ylabel('number of points');
 title('angular error histogram');
+save(resultsDir+"\static "+datestr(now,'mm-dd-yyyy HH-MM'),'ambient_light','avDegree','degrees','directions','env_name','fleshNoFlesh','H','irradiance','medianDegree','n','N','noise_level','number_of_frames','object_name','p','q','R','rho','samples_per_frame','total_frames','W','Z')

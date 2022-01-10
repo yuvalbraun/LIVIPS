@@ -2,18 +2,18 @@ close all;
 clear;
 clc;
 %% choose parameters for simulation
-ambient_light=0;
+ambient_light=1;
 N=8;
 R=10;
 H=512;
 W=512;
-nFrames=398;
-FPS=398;
+nFrames=400;
+FPS=400;
 T=1/FPS;
 lower_freq=70;
 upper_freq=180;
 irradiance=0.5;
-samples_per_frame=256;
+samples_per_frame=512;
 noise_level=0;
 servers=1;  % set to 1 only when "servers.txt" exsigists
 object_number=1; %% choose object
@@ -21,6 +21,7 @@ object_number=1; %% choose object
 currnetDir = fullfile(fileparts(mfilename('fullpath')));
 topDir=extractBefore(currnetDir,"simulation");
 imagesDir=topDir + "\PSBox-v0.3.1\data\Objects";
+resultsDir=currnetDir+"\results";
 addpath(topDir+"image processing");
 addpath(topDir+"LIVItools");
 addpath(genpath(char(topDir+"PSBox-v0.3.1\")));
@@ -164,6 +165,7 @@ for i=1:nFrames
     image=imnoise(image,'gaussian',0,noise_level^2);
     image=mask.*image;
     mov(:,:,:,i)=uint8(image*256); %%todo check this
+    fprintf('finished: %d %%\n',uint8(i/nFrames*100)); %for display
 end
 dlmwrite(topDir + "PSBox-v0.3.1\data\light_directions.txt", directions, ...
         'delimiter', ' ', 'precision', '%20.16f');
@@ -198,4 +200,5 @@ histogram(degrees);
 xlabel('angular error [degrees]');
 ylabel('number of points');
 title('angular error histogram');
+save(resultsDir+"\LIVI "+datestr(now,'mm-dd-yyyy HH-MM'),'ambient_light','avDegree','degrees','directions','env_name','FPS','Freq','H','irradiance','medianDegree','MovMeanRaw','n','N','nFrames','noise_level','object_name','p','q','R','rho','samples_per_frame','W','Z')
 
