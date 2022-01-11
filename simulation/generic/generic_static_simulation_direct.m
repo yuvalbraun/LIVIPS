@@ -3,11 +3,11 @@ close all;
 clear;
 clc;
 %% choose parameters for simulation
-fleshNoFlesh=0;
-ambient_light=0;
+fleshNoFlesh=1;
+ambient_light=1;
 N=8;
 R=10;
-number_of_frames=45;
+number_of_frames=5;
 irradiance=0.5;
 H=512;
 W=512;
@@ -16,6 +16,11 @@ samples_per_frame=512;
 noise_level=0;
 object_number=1; %% choose object
 total_frames=(N+fleshNoFlesh)*number_of_frames;
+FPS=400;
+T=1/FPS;
+flicker=1;
+flicker_frequency=100;
+dutycycle=50;
 
 %% set dir and path
 currnetDir = fullfile(fileparts(mfilename('fullpath')));
@@ -67,9 +72,9 @@ rotY180 = [
 0 0 0 1
 ];
 
-T = eye(4);
-T(:,4) = T_vec;
-world2cam =  T;
+M = eye(4);
+M(:,4) = T_vec;
+world2cam =  M;
 cam2world = inv(world2cam);
 
 mitsubaViewMatrix = cam2world * rotY180;
@@ -144,9 +149,24 @@ for i=1:N
      xml.scene.emitter{1,i}.spectrum.Attributes.name = 'irradiance';
      xml.scene.emitter{1,i}.spectrum.Attributes.value = '0';
  end
+%% ambient light signal
+StopTime = total_frames*T;    % seconds
+t = (0:T:StopTime-T)';  % seconds
+flicker_phase=2*pi*rand();
+if flicker==1
+    env_signal= 1/2+1/2*square(2*pi*flicker_frequency*t+flicker_phase,dutycycle);
+else
+    env_signal=ones(total_frames,1);
+end
 
 %% No flesh
+k=1; %%index for the enviorment signal
 if fleshNoFlesh==1 
+    if ambient_light
+            xml.scene.emitter{1,N+1}.float.Attributes.name = 'scale';
+            xml.scene.emitter{1,N+1}.float.Attributes.value =num2str(env_signal(k));% num2str(normrnd(1,0.1));
+            k=k+1;
+    end
     struct2xml(xml, xmlName);
     system([mitsubaDir, 'mitsuba', ' ',serversString, [xmlDir, xmlName],' -q']);
     noFleshImage=rgb2gray(exrread('simulation.exr')); %%%todo change to uint 8 and add noise
@@ -158,6 +178,13 @@ if fleshNoFlesh==1
      fprintf('finished: %d %%\n',uint8((fleshNoFlesh)/total_frames*100)); %for display
     if number_of_frames>1
        for j=2:(number_of_frames) 
+            if ambient_light
+               xml.scene.emitter{1,N+1}.float.Attributes.name = 'scale';
+               xml.scene.emitter{1,N+1}.float.Attributes.value =num2str(env_signal(k));% num2str(normrnd(1,0.1));
+               k=k+1;
+               struct2xml(xml, xmlName);
+           end
+
            system([mitsubaDir, 'mitsuba', ' ',serversString, [xmlDir, xmlName],' -q']);
            newImage=rgb2gray(exrread('simulation.exr')); %%%todo change to uint 8 and add noise
            if noise_level>0
@@ -175,7 +202,7 @@ if fleshNoFlesh==1
     end
 
 end
-%% take N photos with diffrets sources
+%% take N photos with diffrents sources
 for i=1:N
     if i>1
        xml.scene.emitter{1,(i-1)}.spectrum.Attributes.name = 'irradiance';
@@ -185,6 +212,11 @@ for i=1:N
     xml.scene.emitter{1,i}.spectrum.Attributes.value = num2str(irradiance);
     xml.scene.emitter{1,i}.float.Attributes.name = 'scale';
     xml.scene.emitter{1,i}.float.Attributes.value = '1';%num2str(normrnd(1,0.1));
+    if ambient_light
+               xml.scene.emitter{1,N+1}.float.Attributes.name = 'scale';
+               xml.scene.emitter{1,N+1}.float.Attributes.value =num2str(env_signal(k));% num2str(normrnd(1,0.1));
+               k=k+1;
+    end
     struct2xml(xml, xmlName);
     system([mitsubaDir, 'mitsuba', ' ',serversString, [xmlDir, xmlName],' -q']);
     newImage=rgb2gray(exrread('simulation.exr'));
@@ -196,6 +228,12 @@ for i=1:N
     fprintf('finished: %d %%\n',uint8(((i-1+fleshNoFlesh)*number_of_frames+1)/total_frames*100)); %for display
     if number_of_frames>1
        for j=2:(number_of_frames)
+           if ambient_light
+               xml.scene.emitter{1,N+1}.float.Attributes.name = 'scale';
+               xml.scene.emitter{1,N+1}.float.Attributes.value =num2str(env_signal(k));% num2str(normrnd(1,0.1));
+               k=k+1;
+               struct2xml(xml, xmlName);
+           end
            system([mitsubaDir, 'mitsuba', ' ',serversString, [xmlDir, xmlName],' -q']);
            newImage=rgb2gray(exrread('simulation.exr'));
            if noise_level>0
@@ -239,4 +277,4 @@ histogram(degrees);
 xlabel('angular error [degrees]');
 ylabel('number of points');
 title('angular error histogram');
-save(resultsDir+"\static "+datestr(now,'mm-dd-yyyy HH-MM'),'ambient_light','avDegree','degrees','directions','env_name','fleshNoFlesh','H','irradiance','medianDegree','n','N','noise_level','number_of_frames','object_name','p','q','R','rho','samples_per_frame','total_frames','W','Z')
+save(resultsDir+"\static "+datestr(now,'mm-dd-yyyy HH-MM'),'ambient_light','avDegree','degrees','directions','dutycycle','env_name','fleshNoFlesh','flicker','flicker_frequency','H','irradiance','medianDegree','n','N','noise_level','number_of_frames','object_name','p','q','R','rho','samples_per_frame','total_frames','W','Z')

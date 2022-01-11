@@ -10,13 +10,16 @@ W=512;
 nFrames=400;
 FPS=400;
 T=1/FPS;
-lower_freq=70;
-upper_freq=180;
+lower_freq=60;
+upper_freq=185;
 irradiance=0.5;
 samples_per_frame=512;
 noise_level=0;
 servers=1;  % set to 1 only when "servers.txt" exsigists
 object_number=1; %% choose object
+flicker=1;
+flicker_frequency=100;
+dutycycle=50;
 %% set dir and path
 currnetDir = fullfile(fileparts(mfilename('fullpath')));
 topDir=extractBefore(currnetDir,"simulation");
@@ -145,18 +148,30 @@ end
 pre_freq=round([upper_freq:-(upper_freq-lower_freq)/N:lower_freq]);
 StopTime = nFrames*T;    % seconds
 t = (0:T:StopTime-T)';  % seconds
-Phase=2*pi*rand([1,10]);
+Phase=2*pi*rand([1,N]);
 Base=zeros([N,nFrames]);
 for i=1:N
     Base(i,:) = 1/2+(1/2)*cos(2*pi*pre_freq(i)*t+Phase(i));
 end
+%% ambient light signal
+flicker_phase=2*pi*rand();
+if flicker==1
+    env_signal= 1/2+1/2*square(2*pi*flicker_frequency*t+flicker_phase,dutycycle);
+else
+    env_signal=ones(nFrames,1);
+end
 mov=zeros(H,W,1,nFrames);
+
 
 
 for i=1:nFrames
     for j=1:N
         xml.scene.emitter{1,j}.spectrum.Attributes.name = 'irradiance';
         xml.scene.emitter{1,j}.spectrum.Attributes.value = num2str(irradiance*Base(j,i));
+    end
+    if ambient_light==1
+       xml.scene.emitter{1,N+1}.float.Attributes.name = 'scale';
+       xml.scene.emitter{1,N+1}.float.Attributes.value =num2str(env_signal(i));% num2str(normrnd(1,0.1));
     end
     struct2xml(xml, xmlName);
     system([mitsubaDir, 'mitsuba', ' ',serversString, [xmlDir, xmlName],' -q']);
@@ -171,7 +186,7 @@ dlmwrite(topDir + "PSBox-v0.3.1\data\light_directions.txt", directions, ...
         'delimiter', ' ', 'precision', '%20.16f');
 save('mov','mov');
 %% perform Livi
-[Base,Freq,Location]  = FindFreqFromMovRaw( mov,0,1,FPS,N);
+[Base,Freq,Location]  = FindFreqFromMovRaw( mov,1,FPS,N,pre_freq);
 MovMeanRaw=mean(double(mov(:,:,1,:)*255),4);
 for i=1:N
 [ image,~] = ReconstructModulatedLightFastRaw( mov,Base(i,:),0 );
@@ -200,5 +215,5 @@ histogram(degrees);
 xlabel('angular error [degrees]');
 ylabel('number of points');
 title('angular error histogram');
-save(resultsDir+"\LIVI "+datestr(now,'mm-dd-yyyy HH-MM'),'ambient_light','avDegree','degrees','directions','env_name','FPS','Freq','H','irradiance','medianDegree','MovMeanRaw','n','N','nFrames','noise_level','object_name','p','q','R','rho','samples_per_frame','W','Z')
+save(resultsDir+"\LIVI "+datestr(now,'mm-dd-yyyy HH-MM'),'ambient_light','avDegree','degrees','directions','dutycycle','env_name','flicker','flicker_frequency','flicker_phase','FPS','Freq','H','irradiance','medianDegree','MovMeanRaw','n','N','nFrames','noise_level','object_name','p','q','R','rho','samples_per_frame','W','Z')
 

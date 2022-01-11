@@ -141,7 +141,7 @@ dlmwrite('C:\Users\yuval\Documents\meitar\LIVIPS\PSBox-v0.3.1\data\light_directi
         'delimiter', ' ', 'precision', '%20.16f');
 save('mov','mov');
 %% perform Livi
-[Base,Freq,Location]  = FindFreqFromMovRaw( mov,0,1,FPS,N);
+[Base,Freq,Location]  = FindFreqFromMovRaw( mov,1,FPS,N);
 MovMeanRaw=mean(double(mov(:,:,1,:)*255),4);
 for i=1:N
 [ image,~] = ReconstructModulatedLightFastRaw( mov,Base(i,:),0 );

@@ -28,42 +28,47 @@
    </sensor>
    <emitter type="directional">
       <vector name="direction" x="-0.19623" y="0" z="-0.98114"/>
-      <spectrum name="irradiance" value="0"/>
+      <spectrum name="irradiance" value="0.5"/>
       <float name="scale" value="1"/>
    </emitter>
    <emitter type="directional">
       <vector name="direction" x="-0.13835" y="-0.13835" z="-0.97826"/>
-      <spectrum name="irradiance" value="0"/>
+      <spectrum name="irradiance" value="0.5"/>
       <float name="scale" value="1"/>
    </emitter>
    <emitter type="directional">
       <vector name="direction" x="-1.1927e-17" y="-0.19533" z="-0.97664"/>
-      <spectrum name="irradiance" value="0"/>
+      <spectrum name="irradiance" value="0.5"/>
       <float name="scale" value="1"/>
    </emitter>
    <emitter type="directional">
       <vector name="direction" x="0.1382" y="-0.1382" z="-0.9772"/>
-      <spectrum name="irradiance" value="0"/>
+      <spectrum name="irradiance" value="0.5"/>
       <float name="scale" value="1"/>
    </emitter>
    <emitter type="directional">
       <vector name="direction" x="0.19593" y="-2.6103e-17" z="-0.97963"/>
-      <spectrum name="irradiance" value="0"/>
+      <spectrum name="irradiance" value="0.5"/>
       <float name="scale" value="1"/>
    </emitter>
    <emitter type="directional">
       <vector name="direction" x="0.13895" y="0.13895" z="-0.98252"/>
-      <spectrum name="irradiance" value="0"/>
+      <spectrum name="irradiance" value="0.5"/>
       <float name="scale" value="1"/>
    </emitter>
    <emitter type="directional">
       <vector name="direction" x="3.6058e-17" y="0.19684" z="-0.98418"/>
-      <spectrum name="irradiance" value="0"/>
+      <spectrum name="irradiance" value="0.5"/>
       <float name="scale" value="1"/>
    </emitter>
    <emitter type="directional">
       <vector name="direction" x="-0.1391" y="0.1391" z="-0.9836"/>
       <spectrum name="irradiance" value="0.5"/>
       <float name="scale" value="1"/>
+   </emitter>
+   <emitter type="envmap">
+      <string name="filename"
+              value="C:\Users\lab-yuval\Documents\LIVIPS_code\LIVIPS\simulation\generic\env\pisa_diffuse.hdr"/>
+      <float name="scale" value="0"/>
    </emitter>
 </scene>

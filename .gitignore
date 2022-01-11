@@ -3,3 +3,4 @@ old_data/*
 *.asv
 Experimental/*
 irrelevant/*
+simulation/generic/results/*

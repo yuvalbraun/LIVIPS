@@ -51,7 +51,7 @@ pause(1);
 fclose(s);
 %% perform 3 filters to find 3 images
 f=figure(1);
-[Base,Freq,Location]  = FindFreqFromMovRaw( mov,0,1,FPS,3 );
+[Base,Freq,Location]  = FindFreqFromMovRaw( mov,1,FPS,3 ); %%todo to add pre_set frquancies
 [ FilteredLightTmp1,~] = ReconstructModulatedLightFastRaw( mov,Base(1,:),0 );
 [ FilteredLightTmp2,~] = ReconstructModulatedLightFastRaw( mov,Base(2,:),0 );
 [ FilteredLightTmp3,~] = ReconstructModulatedLightFastRaw( mov,Base(3,:),0 );
