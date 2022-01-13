@@ -1,12 +1,17 @@
 %% calibrate the system using 3 constants light sources
 %% set properties and open a new serial port
 close all
-clc
 clear
-ballRadius=20;
+clc
 info = instrhwinfo('serial');
+
 if isempty(info.AvailableSerialPorts)
-   error('No ports free!');
+   I=instrfindall;
+    if ~isempty(I)
+     fclose(instrfindall);
+     delete(instrfindall);
+     clear 
+    end
 end
 I=instrfindall;
 if ~isempty(I)
@@ -14,11 +19,27 @@ if ~isempty(I)
     delete(instrfindall);
     clear 
 end
+%% set dir and path
+currnetDir = fullfile(fileparts(mfilename('fullpath')));
+topDir=extractBefore(currnetDir,"calibrate");
+dataDir=topDir+"PSBox-v0.3.1\data";
+addpath(topDir+"image processing");
+addpath(topDir+"LIVItools");
+addpath(genpath(char(topDir+"PSBox-v0.3.1\")));
+addpath(topDir+"evaluate");
+
+
+%% set parameters
+
+ballRadius=20; %%radius in mm
 NumberOfCapturedFrames=1;%Number of frames to capture with the camera
-CurrentDir='D:\RawVideos\';
-NewMovies='.\VideoResults\';
-ImageResults='.\ImageResults\';
-topDir = fullfile(fileparts(mfilename('fullpath')), 'data');
+FPS=398;
+T=1/FPS;
+
+%% initialize the camera
+% input('please turn on all the light at the highest intensity')
+% [capture,vid]=InitCameraRaw;
+[capture,vid,ExposureSet,GainSet]=InitCameraRaw_(NumberOfCapturedFrames);
 s = serial(info.AvailableSerialPorts{1}, 'BaudRate', 115200);
 fopen(s);
 %% turn on all each LED seperately and capture image
@@ -48,6 +69,7 @@ fclose(s);
 %% find and save light directions
  [directions,r]  = find3direction3( img1,img2,img3,img3 );
   directions(2,:) =-directions(2,:);
- dlmwrite(fullfile(topDir, 'light_directions.txt'), directions, ...
+ dlmwrite(fullfile(dataDir, 'light_directions.txt'), directions, ...
     'delimiter', ' ', 'precision', '%20.16f');
- dlmwrite(fullfile(topDir, 'scale.txt'), ballRadius/r);
+ dlmwrite(fullfile(dataDir, 'scale.txt'), ballRadius/r);
+

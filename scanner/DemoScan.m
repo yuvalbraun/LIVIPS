@@ -1,7 +1,9 @@
 %% demo of full scan and 3D reconstruction (with 3 sources). The system must be calibrated before
 close all
 clc
-clear
+clear 
+
+%% close all previous connections
 I=instrfindall;
 if ~isempty(I)
    fclose(instrfindall);
@@ -12,17 +14,31 @@ info = instrhwinfo('serial');
 if isempty(info.AvailableSerialPorts)
    error('No ports free!');
 end
+
+%% set properties
+
+NumberOfCapturedFrames=398;%Number of frames to capture with the camera
+FPS=398;
+T=1/FPS;
+create_GT=0;
 saveBW=1;
 if saveBW==0
     BW = load('MASK').BW;
 end
 
+%% set dir and path
+currentDir = fullfile(fileparts(mfilename('fullpath')));
+topDir=extractBefore(currentDir,"scanner");
+imagesDir=topDir + "\PSBox-v0.3.1\data\Objects";
+resultsDir=currentDir+"\results";
+addpath(topDir+"image processing");
+addpath(topDir+"LIVItools");
+addpath(genpath(char(topDir+"PSBox-v0.3.1\")));
+addpath(topDir+"evaluate");
 
-%% set properties
-FPS=398;
-T=1/FPS;
-topDir = fullfile(fileparts(mfilename('fullpath')), 'data');
-NumberOfCapturedFrames=398;%Number of frames to capture with the camera
+
+
+
 
 
 %% initialize the camera and open port
@@ -51,14 +67,14 @@ pause(1);
 fclose(s);
 %% perform 3 filters to find 3 images
 f=figure(1);
-[Base,Freq,Location]  = FindFreqFromMovRaw( mov,1,FPS,3 ); %%todo to add pre_set frquancies
+[Base,Freq,Location]  = FindFreqFromMovRaw( mov,1,FPS,3 );
 [ FilteredLightTmp1,~] = ReconstructModulatedLightFastRaw( mov,Base(1,:),0 );
 [ FilteredLightTmp2,~] = ReconstructModulatedLightFastRaw( mov,Base(2,:),0 );
 [ FilteredLightTmp3,~] = ReconstructModulatedLightFastRaw( mov,Base(3,:),0 );
 MovMeanRaw=mean(double(mov(:,:,1,:)*255),4);
- FilteredLightDemosaic1=uint8((double(demosaic(uint8(FilteredLightTmp1*255),'bggr'))./255)*255);
- FilteredLightDemosaic2=uint8((double(demosaic(uint8(FilteredLightTmp2*255),'bggr'))./255)*255);
- FilteredLightDemosaic3=uint8((double(demosaic(uint8(FilteredLightTmp3*255),'bggr'))./255)*255);
+ FilteredLightDemosaic1=double(demosaic(uint8(FilteredLightTmp1*255),'bggr'))./255;
+ FilteredLightDemosaic2=double(demosaic(uint8(FilteredLightTmp2*255),'bggr'))./255;
+ FilteredLightDemosaic3=double(demosaic(uint8(FilteredLightTmp3*255),'bggr'))./255;
  MovDemosaicMean=uint8(ColorBalanceRedLED(double(demosaic(uint8(MovMeanRaw),'bggr'))./255)*255);
 %% plot images
 figure;
@@ -72,20 +88,55 @@ figure;
     [BW,maskedImage] = segmentImage(MovDemosaicMean);
     imwrite(maskedImage,'for_GT.png');
     save('MASK','BW');
+  end
+ I=zeros(size(FilteredLightDemosaic1,1),size(FilteredLightDemosaic1,2),size(FilteredLightDemosaic1,3),3);
+ I(:,:,:,1)=FilteredLightDemosaic1.*BW;
+ I(:,:,:,2)=FilteredLightDemosaic2.*BW;
+ I(:,:,:,3)=FilteredLightDemosaic3.*BW;
+ imwrite(I(:,:,:,1),imagesDir+'\image_01.png');    
+ imwrite(I(:,:,:,2),imagesDir+'\image_02.png');    
+ imwrite(I(:,:,:,3),imagesDir+'\image_03.png');
+ for i=1:3
+     image=I(:,:,:,i);
+     save(imagesDir + "\image_0"+num2str(i),'image');
  end
-
- I1=FilteredLightDemosaic1.*uint8(BW);
- I2=FilteredLightDemosaic2.*uint8(BW);
- I3=FilteredLightDemosaic3.*uint8(BW);
- topDir = fullfile(fileparts(mfilename('fullpath')), 'data');
- imwrite(I1,'C:\Users\yuval\Documents\meitar\LIVIPS\PSBox-v0.3.1\data\Objects\image_01.png');    
- imwrite(I2,'C:\Users\yuval\Documents\meitar\LIVIPS\PSBox-v0.3.1\data\Objects\image_02.png');    
- imwrite(I3,'C:\Users\yuval\Documents\meitar\LIVIPS\PSBox-v0.3.1\data\Objects\image_03.png');
      
+    
 
 
 %%   perform photometric stereo algorithm
 demoPSBox;
+
+
+%% save as GT
+if create_GT==1
+    save(currentDir+"\GT_face",'n','Z')
+end
+
+
+%% evaluate with GT
+n_GT=load(currentDir+"\GT_face").n;
+Z_GT=load(currentDir+"\GT_face").Z;
+
+degrees=calcDegreeError(n_GT,n);
+[H1,W1,D1]=size(degrees);
+figure
+%imagesc(flipud(degrees'));
+him=imshow([flipud(degrees) nan(H1,1); nan(1,W1+1)],colormap(jet(30)));
+set(him, 'AlphaData', ~isnan([flipud(degrees) nan(H1,1); nan(1,W1+1)]))
+shading flat;
+set(gca, 'ydir', 'reverse');
+%title('angular error map');
+colorbar;   
+medianDegree=calcMedian(degrees);
+avDegree=calcSum(degrees);
+figure
+histogram(degrees);
+xlabel('angular error [degrees]');
+ylabel('number of points');
+title('angular error histogram');
+
+
 
 %save('Zmap_LIVI','Z');
 %save('nmap_LIVI','n');

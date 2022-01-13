@@ -2,10 +2,6 @@
 close all
 clear
 clc
-CurrentDir='D:\RawVideos\';
-NewMovies='.\VideoResults\';
-ImageResults='.\ImageResults\';
-topDir = fullfile(fileparts(mfilename('fullpath')), 'data');
 info = instrhwinfo('serial');
 
 if isempty(info.AvailableSerialPorts)
@@ -22,6 +18,18 @@ if ~isempty(I)
     delete(instrfindall);
     clear 
 end
+%% set dir and path
+currnetDir = fullfile(fileparts(mfilename('fullpath')));
+topDir=extractBefore(currnetDir,"calibrate");
+dataDir=topDir+"PSBox-v0.3.1\data";
+addpath(topDir+"image processing");
+addpath(topDir+"LIVItools");
+addpath(genpath(char(topDir+"PSBox-v0.3.1\")));
+addpath(topDir+"evaluate");
+
+
+%% set parameters
+
 ballRadius=20; %%radius in mm
 NumberOfCapturedFrames=398;%Number of frames to capture with the camera
 FPS=398;
@@ -53,7 +61,7 @@ fclose(s);
 save('ball.mat','mov');
 %% perform 3 filters to find 3 images
 f=figure(1);
-[Base,Freq,Location]  = FindFreqFromMovRaw( mov,0,1,FPS,3 );
+[Base,Freq,Location]  = FindFreqFromMovRaw( mov,1,FPS,3 );
 [ FilteredLightTmp1,~] = ReconstructModulatedLightFastRaw( mov,Base(1,:),0 );
 [ FilteredLightTmp2,~] = ReconstructModulatedLightFastRaw( mov,Base(2,:),0 );
 [ FilteredLightTmp3,~] = ReconstructModulatedLightFastRaw( mov,Base(3,:),0 );
@@ -71,7 +79,7 @@ figure;
 %% find and save light directions
  [directions,r]  = find3direction3( FilteredLightDemosaic1,FilteredLightDemosaic2,FilteredLightDemosaic3,MovDemosaicMean );
   directions(2,:) =-directions(2,:);
- dlmwrite(fullfile(topDir, 'light_directions.txt'), directions, ...
+ dlmwrite(fullfile(dataDir, 'light_directions.txt'), directions, ...
     'delimiter', ' ', 'precision', '%20.16f');
- dlmwrite(fullfile(topDir, 'scale.txt'), ballRadius/r);
+ dlmwrite(fullfile(dataDir, 'scale.txt'), ballRadius/r);
 

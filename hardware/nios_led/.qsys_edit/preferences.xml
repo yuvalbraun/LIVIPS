@@ -16,7 +16,7 @@
  </clocktable>
  <library
    expandedCategories="Library,Library/Peripherals/Microcontroller Peripherals,Library/Peripherals,Project" />
- <window width="1100" height="800" x="-1737" y="117" />
+ <window width="1100" height="800" x="-1776" y="153" />
  <generation synthesis="VERILOG" />
  <hdlexample language="VHDL" />
 </preferences>
