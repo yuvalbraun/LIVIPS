@@ -1,6 +1,3 @@
-close all;
-clear;
-clc;
 %% choose parameters for simulation
 ambient_light=1;
 N=8;
@@ -14,11 +11,10 @@ lower_freq=60;
 upper_freq=185;
 irradiance=0.5;
 samples_per_frame=512;
-noise_level=0;
+noise_level=0.008;
 servers=1;  % set to 1 only when "servers.txt" exsigists
 object_number=1; %% choose object
 flicker=1;
-flicker_frequency=100;
 dutycycle=50;
 %% set dir and path
 currnetDir = fullfile(fileparts(mfilename('fullpath')));
@@ -36,7 +32,7 @@ objects_dir=currnetDir+"\objects\";
 objects_names= ["bunny","buddha"];
 scales=[10,9];
 camera_locs= [-0.2 1 50; 0 1.3 50];
-object_scales=[10,8];
+object_scales=[10,9];
 camera_loc = camera_locs(object_number,:);
 object_name=objects_names(object_number)+'.obj';%todo change to ply
 object= convertStringsToChars(objects_dir+object_name);
@@ -78,6 +74,7 @@ world2cam =  M;
 cam2world = inv(world2cam);
 
 mitsubaViewMatrix = cam2world * rotY180;
+
 
 
 %% sources
@@ -134,6 +131,7 @@ end
 xml.scene.emitter=sources_cell;
 %% create object
 xml.scene.shape.string.Attributes.value=object;
+xml.scene.shape.transform.scale.Attributes.value=object_scales(object_number);
 %% crate mask
 struct2xml(xml, xmlName);
 system([mitsubaDir, 'mitsuba', ' ',serversString, [xmlDir, xmlName],' -q']);
@@ -179,7 +177,7 @@ for i=1:nFrames
     image=rgb2gray(image);
     image=imnoise(image,'gaussian',0,noise_level^2);
     image=mask.*image;
-    mov(:,:,:,i)=uint8(image*256); %%todo check this
+    mov(:,:,:,i)=uint8(image*255); %%todo check this
     fprintf('finished: %d %%\n',uint8(i/nFrames*100)); %for display
 end
 dlmwrite(topDir + "PSBox-v0.3.1\data\light_directions.txt", directions, ...
@@ -191,7 +189,7 @@ MovMeanRaw=mean(double(mov(:,:,1,:)*255),4);
 for i=1:N
 [ image,~] = ReconstructModulatedLightFastRaw( mov,Base(i,:),0 );
     imwrite(image,imagesDir + "\image_0"+num2str(i)+".png");  
-    imwrite(double(image/256),imagesDir + "\image_0"+num2str(i)+".tiff");
+    imwrite(double(image/255),imagesDir + "\image_0"+num2str(i)+".tiff");
     save(imagesDir + "\image_0"+num2str(i),'image');
 
 end

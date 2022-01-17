@@ -1,25 +1,21 @@
 %% simulate calssic PS in dark or alight enviorment and evaluate the result with GT.
-close all;
-clear;
-clc;
 %% choose parameters for simulation
-fleshNoFlesh=1;
-ambient_light=1;
+fleshNoFlesh=0;
+ambient_light=0;
 N=8;
 R=10;
-number_of_frames=5;
+number_of_frames=400;
 irradiance=0.5;
 H=512;
 W=512;
 servers=1; % set to 1 only when "servers.txt" exsists
 samples_per_frame=512;
-noise_level=0;
+noise_level=0.008;
 object_number=1; %% choose object
 total_frames=(N+fleshNoFlesh)*number_of_frames;
 FPS=400;
 T=1/FPS;
-flicker=1;
-flicker_frequency=100;
+flicker=0;
 dutycycle=50;
 
 %% set dir and path
@@ -173,7 +169,7 @@ if fleshNoFlesh==1
     if noise_level>0
         noFleshImage = imnoise(noFleshImage,'gaussian',0,noise_level^2); % Gaussian white noise with mean 0 and variance noise_level.
     end
-    noFleshImage_8bit=uint8(noFleshImage*256);%%%image in 8bit 
+    noFleshImage_8bit=uint8(noFleshImage*255);%%%image in 8bit 
     noFleshImage=double(noFleshImage_8bit); %% convert to double for avareging
      fprintf('finished: %d %%\n',uint8((fleshNoFlesh)/total_frames*100)); %for display
     if number_of_frames>1
@@ -190,7 +186,7 @@ if fleshNoFlesh==1
            if noise_level>0
                  newImage = imnoise(newImage,'gaussian',0,noise_level^2); % Gaussian white noise with mean 0 and variance noise_level.
            end
-            newImage_8bit=uint8(newImage*256);%%%image in 8bit 
+            newImage_8bit=uint8(newImage*255);%%%image in 8bit 
             newImage=double(newImage_8bit); %% convert to double for avareging
 
            noFleshImage=noFleshImage+newImage;
@@ -223,7 +219,7 @@ for i=1:N
     if noise_level>0
         newImage = imnoise(newImage,'gaussian',0,noise_level^2); % Gaussian white noise with mean 0 and variance noise_level.
     end
-    newImage_8bit=uint8(newImage*256);%%%image in 8bit 
+    newImage_8bit=uint8(newImage*255);%%%image in 8bit 
     image=double(newImage_8bit); %% convert to double for avareging
     fprintf('finished: %d %%\n',uint8(((i-1+fleshNoFlesh)*number_of_frames+1)/total_frames*100)); %for display
     if number_of_frames>1
@@ -239,7 +235,7 @@ for i=1:N
            if noise_level>0
               newImage = imnoise(newImage,'gaussian',0,noise_level^2); % Gaussian white noise with mean 0 and variance noise_level.
            end
-           newImage_8bit=uint8(newImage*256);%%%image in 8bit 
+           newImage_8bit=uint8(newImage*255);%%%image in 8bit 
            image=image+double(newImage_8bit);
            fprintf('finished: %d %%\n',uint8(((i-1+fleshNoFlesh)*number_of_frames+j)/total_frames*100)); %for display
        end
@@ -253,7 +249,7 @@ for i=1:N
     image=mask.*image;
 
     imwrite(image,imagesDir + "\image_0"+num2str(i)+".png");  
-    imwrite(double(image/256),imagesDir + "\image_0"+num2str(i)+".tiff");
+    imwrite(double(image/255),imagesDir + "\image_0"+num2str(i)+".tiff");
     save(imagesDir + "\image_0"+num2str(i),'image');
 end
  dlmwrite(topDir +"PSBox-v0.3.1\data\light_directions.txt", directions, ...
