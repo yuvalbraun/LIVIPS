@@ -1,10 +1,10 @@
 %% simulate calssic PS in dark or alight enviorment and evaluate the result with GT.
 %% choose parameters for simulation
 fleshNoFlesh=0;
-ambient_light=0;
+ambient_light=1;
 N=8;
 R=10;
-number_of_frames=400;
+number_of_frames=50;
 irradiance=0.5;
 H=512;
 W=512;
@@ -17,6 +17,18 @@ FPS=400;
 T=1/FPS;
 flicker=0;
 dutycycle=50;
+
+
+randomsequence=0;
+pn_interval=0.01;
+pnSequence = comm.PNSequence('Polynomial',[9 5 0],'InitialConditions',[0,0,0,0,0,0,0,0,1],'SamplesPerFrame',total_frames);
+
+moving_source=1;
+extra_source_radius=20;
+extra_source_angular_motion=pi;
+extra_source_irradiance=0.5;
+teta=0;
+delta_teta=extra_source_angular_motion/(total_frames-1);
 
 %% set dir and path
 currnetDir = fullfile(fileparts(mfilename('fullpath')));
@@ -31,10 +43,9 @@ addpath('_lib\openexr-matlab-windows\x64');
 addpath('_lib\struct2xml');
 addpath(genpath(topDir+"PSBox-v0.3.1"));
 objects_dir=currnetDir+"\objects\";
-objects_names= ["bunny","buddha"];
-scales=[10,9];
-camera_locs= [-0.2 1 50; 0 1.3 50];
-object_scales=[10,8];
+objects_names= ["bunny","buddha","Caligula"];
+scales=[10,9,0.004];
+camera_locs= [-0.2 1 50; 0 1.3 50; 0 0.9 50];
 camera_loc = camera_locs(object_number,:);
 object_name=objects_names(object_number)+'.obj';%todo change to ply
 object= convertStringsToChars(objects_dir+object_name);
@@ -99,7 +110,7 @@ sources_location=zeros(N,3);
 directions=sources_location';
 for i=1:N
     sources_location(i,:)=[points{i}(1),points{i}(2),-z];
-    directions(:,i)=(sources_location(i,:)-[x,y,0])/norm(sources_location(i,:));
+    directions(:,i)=(sources_location(i,:)-[x,y,0])/norm(sources_location(i,:)-[x,y,0]);
 end
 %% crate sources
 if ambient_light==1
@@ -121,11 +132,27 @@ for i=1:N
 end
 %create enviorment light
 if ambient_light==1
-    sources_cell{1,N+1}.Attributes.type = 'envmap';
-    sources_cell{1,N+1}.string.Attributes.name = 'filename';
-    sources_cell{1,N+1}.string.Attributes.value = env;
-    sources_cell{1,N+1}.float.Attributes.name = 'scale';
-    sources_cell{1,N+1}.float.Attributes.value = '0';
+    if moving_source==0 %%enviorment map
+        sources_cell{1,N+1}.Attributes.type = 'envmap';
+        sources_cell{1,N+1}.string.Attributes.name = 'filename';
+        sources_cell{1,N+1}.string.Attributes.value = env;
+        sources_cell{1,N+1}.float.Attributes.name = 'scale';
+        sources_cell{1,N+1}.float.Attributes.value = '0'; %% zero for mask
+    
+    else %%% moving source
+        moving_source_loc= [x+extra_source_radius*cos(teta),y+extra_source_radius*sin(teta),50];
+        moving_source_direction= [x,y,0]-moving_source_loc;
+        sources_cell{1,N+1} = xml.scene.emitter{1,1};
+        sources_cell{1,N+1}.Attributes.type = 'directional';
+        sources_cell{1,N+1}.spectrum.Attributes.name = 'irradiance';
+        sources_cell{1,N+1}.spectrum.Attributes.value = num2str(extra_source_irradiance);
+        sources_cell{1,N+1}.vector.Attributes.x = num2str(moving_source_direction(1));
+        sources_cell{1,N+1}.vector.Attributes.y = num2str(moving_source_direction(2));
+        sources_cell{1,N+1}.vector.Attributes.z = num2str(moving_source_direction(3));
+        sources_cell{1,N+1}.float.Attributes.name = 'scale';
+        sources_cell{1,N+1}.float.Attributes.value = '0';%% zero for mask
+    end
+
 end
  xml.scene.emitter=sources_cell;
 %% create object
@@ -151,6 +178,8 @@ t = (0:T:StopTime-T)';  % seconds
 flicker_phase=2*pi*rand();
 if flicker==1
     env_signal= 1/2+1/2*square(2*pi*flicker_frequency*t+flicker_phase,dutycycle);
+elseif randomsequence==1
+    env_signal=repelem(pnSequence(),FPS*pn_interval);
 else
     env_signal=ones(total_frames,1);
 end
@@ -159,9 +188,11 @@ end
 k=1; %%index for the enviorment signal
 if fleshNoFlesh==1 
     if ambient_light
+        if moving_source==0
             xml.scene.emitter{1,N+1}.float.Attributes.name = 'scale';
             xml.scene.emitter{1,N+1}.float.Attributes.value =num2str(env_signal(k));% num2str(normrnd(1,0.1));
             k=k+1;
+        end
     end
     struct2xml(xml, xmlName);
     system([mitsubaDir, 'mitsuba', ' ',serversString, [xmlDir, xmlName],' -q']);
@@ -174,12 +205,23 @@ if fleshNoFlesh==1
      fprintf('finished: %d %%\n',uint8((fleshNoFlesh)/total_frames*100)); %for display
     if number_of_frames>1
        for j=2:(number_of_frames) 
-            if ambient_light
-               xml.scene.emitter{1,N+1}.float.Attributes.name = 'scale';
-               xml.scene.emitter{1,N+1}.float.Attributes.value =num2str(env_signal(k));% num2str(normrnd(1,0.1));
-               k=k+1;
-               struct2xml(xml, xmlName);
-           end
+            if ambient_light %% for env map
+                if moving_source==0
+                    xml.scene.emitter{1,N+1}.float.Attributes.name = 'scale';
+                    xml.scene.emitter{1,N+1}.float.Attributes.value =num2str(env_signal(k));% num2str(normrnd(1,0.1));
+                    k=k+1;
+                else %% for moving source
+                    teta=teta+delta_teta;
+                    moving_source_loc= [x+R*cos(teta),y+sin(teta),50];
+                    moving_source_direction= [x,y,0]-moving_source_loc;
+                    xml.scene.emitter{1,N+1}.vector.Attributes.x = num2str(moving_source_direction(1));
+                    xml.scene.emitter{1,N+1}.vector.Attributes.y = num2str(moving_source_direction(2));
+                    xml.scene.emitter{1,N+1}.vector.Attributes.z = num2str(moving_source_direction(3));
+
+                end
+                struct2xml(xml, xmlName);
+
+            end
 
            system([mitsubaDir, 'mitsuba', ' ',serversString, [xmlDir, xmlName],' -q']);
            newImage=rgb2gray(exrread('simulation.exr')); %%%todo change to uint 8 and add noise
@@ -208,10 +250,22 @@ for i=1:N
     xml.scene.emitter{1,i}.spectrum.Attributes.value = num2str(irradiance);
     xml.scene.emitter{1,i}.float.Attributes.name = 'scale';
     xml.scene.emitter{1,i}.float.Attributes.value = '1';%num2str(normrnd(1,0.1));
-    if ambient_light
-               xml.scene.emitter{1,N+1}.float.Attributes.name = 'scale';
-               xml.scene.emitter{1,N+1}.float.Attributes.value =num2str(env_signal(k));% num2str(normrnd(1,0.1));
-               k=k+1;
+    if ambient_light %% for env map
+         if moving_source==0
+                    xml.scene.emitter{1,N+1}.float.Attributes.name = 'scale';
+                    xml.scene.emitter{1,N+1}.float.Attributes.value =num2str(env_signal(k));% num2str(normrnd(1,0.1));
+                    k=k+1;
+         else %% for moving source
+                    teta=teta+delta_teta;
+                    moving_source_loc= [x+R*cos(teta),y+sin(teta),50];
+                    moving_source_direction= [x,y,0]-moving_source_loc;
+                    xml.scene.emitter{1,N+1}.vector.Attributes.x = num2str(moving_source_direction(1));
+                    xml.scene.emitter{1,N+1}.vector.Attributes.y = num2str(moving_source_direction(2));
+                    xml.scene.emitter{1,N+1}.vector.Attributes.z = num2str(moving_source_direction(3));
+
+         end
+           struct2xml(xml, xmlName);
+
     end
     struct2xml(xml, xmlName);
     system([mitsubaDir, 'mitsuba', ' ',serversString, [xmlDir, xmlName],' -q']);
@@ -224,12 +278,23 @@ for i=1:N
     fprintf('finished: %d %%\n',uint8(((i-1+fleshNoFlesh)*number_of_frames+1)/total_frames*100)); %for display
     if number_of_frames>1
        for j=2:(number_of_frames)
-           if ambient_light
-               xml.scene.emitter{1,N+1}.float.Attributes.name = 'scale';
-               xml.scene.emitter{1,N+1}.float.Attributes.value =num2str(env_signal(k));% num2str(normrnd(1,0.1));
-               k=k+1;
-               struct2xml(xml, xmlName);
-           end
+           if ambient_light %% for env map
+             if moving_source==0
+                    xml.scene.emitter{1,N+1}.float.Attributes.name = 'scale';
+                    xml.scene.emitter{1,N+1}.float.Attributes.value =num2str(env_signal(k));% num2str(normrnd(1,0.1));
+                    k=k+1;
+             else %% for moving source
+                    teta=teta+delta_teta;
+                    moving_source_loc= [x+extra_source_radius*cos(teta),y+extra_source_radius*sin(teta),50];
+                    moving_source_direction= [x,y,0]-moving_source_loc;
+                    xml.scene.emitter{1,N+1}.vector.Attributes.x = num2str(moving_source_direction(1));
+                    xml.scene.emitter{1,N+1}.vector.Attributes.y = num2str(moving_source_direction(2));
+                    xml.scene.emitter{1,N+1}.vector.Attributes.z = num2str(moving_source_direction(3));
+
+              end
+              struct2xml(xml, xmlName);
+
+            end
            system([mitsubaDir, 'mitsuba', ' ',serversString, [xmlDir, xmlName],' -q']);
            newImage=rgb2gray(exrread('simulation.exr'));
            if noise_level>0
@@ -273,4 +338,8 @@ histogram(degrees);
 xlabel('angular error [degrees]');
 ylabel('number of points');
 title('angular error histogram');
-save(resultsDir+"\static "+datestr(now,'mm-dd-yyyy HH-MM'),'ambient_light','avDegree','degrees','directions','dutycycle','env_name','fleshNoFlesh','flicker','flicker_frequency','H','irradiance','medianDegree','n','N','noise_level','number_of_frames','object_name','p','q','R','rho','samples_per_frame','total_frames','W','Z')
+if flicker==1
+    save(resultsDir+"\static "+datestr(now,'mm-dd-yyyy HH-MM'),'ambient_light','avDegree','degrees','directions','dutycycle','env_name','fleshNoFlesh','flicker','flicker_frequency','H','irradiance','medianDegree','n','N','noise_level','number_of_frames','object_name','p','q','R','rho','samples_per_frame','total_frames','W','Z')
+else
+    save(resultsDir+"\static "+datestr(now,'mm-dd-yyyy HH-MM'),'ambient_light','avDegree','degrees','directions','dutycycle','env_signal','extra_source_angular_motion','extra_source_irradiance','extra_source_radius','randomsequence','env_name','fleshNoFlesh','flicker','H','irradiance','medianDegree','moving_source','n','N','noise_level','number_of_frames','object_name','p','pn_interval','q','R','rho','samples_per_frame','total_frames','W','Z')
+end

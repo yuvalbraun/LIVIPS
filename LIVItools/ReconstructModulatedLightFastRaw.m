@@ -20,7 +20,7 @@ Base1Matrix(1:RowSize,1:ColSize,1,:)=Base3d(ones(1,RowSize),ones(1,ColSize),:);
 % FilteredLight1=gather(sum(Mult,4)/nFrames);
 
 
-Mult=Base1Matrix.*mov;
+Mult=Base1Matrix.*double(mov);
 FilteredLight1=sum(Mult,4)/nFrames;
 
 FilteredDC=mean(mov,4);
