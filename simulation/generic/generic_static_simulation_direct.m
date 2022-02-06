@@ -1,18 +1,18 @@
 %% simulate calssic PS in dark or alight enviorment and evaluate the result with GT.
 %% choose parameters for simulation
-fleshNoFlesh=0;
+flashNoFlash=1;
 ambient_light=1;
 N=8;
 R=10;
-number_of_frames=50;
+number_of_frames=45;
 irradiance=0.5;
 H=512;
 W=512;
 servers=1; % set to 1 only when "servers.txt" exsists
 samples_per_frame=512;
 noise_level=0.008;
-object_number=1; %% choose object
-total_frames=(N+fleshNoFlesh)*number_of_frames;
+object_number=3; %% choose object
+total_frames=(N+flashNoFlash)*number_of_frames;
 FPS=400;
 T=1/FPS;
 flicker=0;
@@ -20,10 +20,10 @@ dutycycle=50;
 
 
 randomsequence=0;
-pn_interval=0.01;
-pnSequence = comm.PNSequence('Polynomial',[9 5 0],'InitialConditions',[0,0,0,0,0,0,0,0,1],'SamplesPerFrame',total_frames);
-
-moving_source=1;
+pn_interval=0.1;
+pnSequence = comm.PNSequence('Polynomial',[9 5 0],'InitialConditions',[0,0,0,0,0,0,0,0,1],'SamplesPerFrame',1/pn_interval);
+pnSequence(); %% to skip the first 10 items
+moving_source=0;
 extra_source_radius=20;
 extra_source_angular_motion=pi;
 extra_source_irradiance=0.5;
@@ -54,7 +54,7 @@ GT_name=objects_names(object_number)+'_GT.exr';
 GT_file= convertStringsToChars(GT_dir+GT_name);
 env_dir=currnetDir+"\env\";
 env_names=["pisa_diffuse","pisa","glacier_diffuse","glacier"];
-env_number=1;
+env_number=3;
 env_name=env_names(env_number)+'.hdr';
 env=convertStringsToChars(env_dir+env_name);
 % set the dir. to your Mitsuba renderer
@@ -179,14 +179,14 @@ flicker_phase=2*pi*rand();
 if flicker==1
     env_signal= 1/2+1/2*square(2*pi*flicker_frequency*t+flicker_phase,dutycycle);
 elseif randomsequence==1
-    env_signal=repelem(pnSequence(),FPS*pn_interval);
+    env_signal=repelem(cat(1,pnSequence(),pnSequence()),FPS*pn_interval); %%the second pnSequence() is only for flash no flash that is longer than 1 second
 else
     env_signal=ones(total_frames,1);
 end
 
-%% No flesh
+%% No flash
 k=1; %%index for the enviorment signal
-if fleshNoFlesh==1 
+if flashNoFlash==1 
     if ambient_light
         if moving_source==0
             xml.scene.emitter{1,N+1}.float.Attributes.name = 'scale';
@@ -196,13 +196,13 @@ if fleshNoFlesh==1
     end
     struct2xml(xml, xmlName);
     system([mitsubaDir, 'mitsuba', ' ',serversString, [xmlDir, xmlName],' -q']);
-    noFleshImage=rgb2gray(exrread('simulation.exr')); %%%todo change to uint 8 and add noise
+    noFlashImage=rgb2gray(exrread('simulation.exr')); %%%todo change to uint 8 and add noise
     if noise_level>0
-        noFleshImage = imnoise(noFleshImage,'gaussian',0,noise_level^2); % Gaussian white noise with mean 0 and variance noise_level.
+        noFlashImage = imnoise(noFlashImage,'gaussian',0,noise_level^2); % Gaussian white noise with mean 0 and variance noise_level.
     end
-    noFleshImage_8bit=uint8(noFleshImage*255);%%%image in 8bit 
-    noFleshImage=double(noFleshImage_8bit); %% convert to double for avareging
-     fprintf('finished: %d %%\n',uint8((fleshNoFlesh)/total_frames*100)); %for display
+    noFlashImage_8bit=uint8(noFlashImage*255);%%%image in 8bit 
+    noFlashImage=double(noFlashImage_8bit); %% convert to double for avareging
+     fprintf('finished: %d %%\n',uint8((flashNoFlash)/total_frames*100)); %for display
     if number_of_frames>1
        for j=2:(number_of_frames) 
             if ambient_light %% for env map
@@ -231,12 +231,12 @@ if fleshNoFlesh==1
             newImage_8bit=uint8(newImage*255);%%%image in 8bit 
             newImage=double(newImage_8bit); %% convert to double for avareging
 
-           noFleshImage=noFleshImage+newImage;
+           noFlashImage=noFlashImage+newImage;
            fprintf('finished: %d %%\n',uint8(j/total_frames*100)); %for display
 
        end
        
-     noFleshImage=noFleshImage/number_of_frames;
+     noFlashImage=noFlashImage/number_of_frames;
     end
 
 end
@@ -275,7 +275,7 @@ for i=1:N
     end
     newImage_8bit=uint8(newImage*255);%%%image in 8bit 
     image=double(newImage_8bit); %% convert to double for avareging
-    fprintf('finished: %d %%\n',uint8(((i-1+fleshNoFlesh)*number_of_frames+1)/total_frames*100)); %for display
+    fprintf('finished: %d %%\n',uint8(((i-1+flashNoFlash)*number_of_frames+1)/total_frames*100)); %for display
     if number_of_frames>1
        for j=2:(number_of_frames)
            if ambient_light %% for env map
@@ -302,13 +302,13 @@ for i=1:N
            end
            newImage_8bit=uint8(newImage*255);%%%image in 8bit 
            image=image+double(newImage_8bit);
-           fprintf('finished: %d %%\n',uint8(((i-1+fleshNoFlesh)*number_of_frames+j)/total_frames*100)); %for display
+           fprintf('finished: %d %%\n',uint8(((i-1+flashNoFlash)*number_of_frames+j)/total_frames*100)); %for display
        end
        image=image/number_of_frames;
     end
 
-    if fleshNoFlesh==1  
-        image=image-noFleshImage;
+    if flashNoFlash==1  
+        image=image-noFlashImage;
     end
     %image=rgb2gray(image);
     image=mask.*image;
@@ -339,7 +339,7 @@ xlabel('angular error [degrees]');
 ylabel('number of points');
 title('angular error histogram');
 if flicker==1
-    save(resultsDir+"\static "+datestr(now,'mm-dd-yyyy HH-MM'),'ambient_light','avDegree','degrees','directions','dutycycle','env_name','fleshNoFlesh','flicker','flicker_frequency','H','irradiance','medianDegree','n','N','noise_level','number_of_frames','object_name','p','q','R','rho','samples_per_frame','total_frames','W','Z')
+    save(resultsDir+"\static "+datestr(now,'mm-dd-yyyy HH-MM'),'ambient_light','avDegree','degrees','directions','dutycycle','env_name','flashNoFlash','flicker','flicker_frequency','H','irradiance','medianDegree','n','N','noise_level','number_of_frames','object_name','p','q','R','rho','samples_per_frame','total_frames','W','Z')
 else
-    save(resultsDir+"\static "+datestr(now,'mm-dd-yyyy HH-MM'),'ambient_light','avDegree','degrees','directions','dutycycle','env_signal','extra_source_angular_motion','extra_source_irradiance','extra_source_radius','randomsequence','env_name','fleshNoFlesh','flicker','H','irradiance','medianDegree','moving_source','n','N','noise_level','number_of_frames','object_name','p','pn_interval','q','R','rho','samples_per_frame','total_frames','W','Z')
+    save(resultsDir+"\static "+datestr(now,'mm-dd-yyyy HH-MM'),'ambient_light','avDegree','degrees','directions','dutycycle','env_signal','extra_source_angular_motion','extra_source_irradiance','extra_source_radius','randomsequence','env_name','flashNoFlash','flicker','H','irradiance','medianDegree','moving_source','n','N','noise_level','number_of_frames','object_name','p','pn_interval','q','R','rho','samples_per_frame','total_frames','W','Z')
 end

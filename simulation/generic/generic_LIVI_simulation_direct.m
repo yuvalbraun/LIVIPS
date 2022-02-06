@@ -1,10 +1,10 @@
 %% choose parameters for simulation
-ambient_light=1;
+ambient_light=0;
 N=8;
 R=10;
 H=512;
 W=512;
-nFrames=400;
+nFrames=800;
 FPS=400;
 T=1/FPS;
 lower_freq=60;
@@ -17,9 +17,10 @@ object_number=1; %% choose object
 flicker=0;
 dutycycle=50;
 randomsequence=0;
-pn_interval=0.05;
-pnSequence = comm.PNSequence('Polynomial',[90 5 0],'InitialConditions',[0,0,0,0,0,0,0,0,1],'SamplesPerFrame',nFrames);
-moving_source=1;
+pn_interval=0.1;
+pnSequence = comm.PNSequence('Polynomial',[9 5 0],'InitialConditions',[0,0,0,0,0,0,0,0,1],'SamplesPerFrame',1/pn_interval);
+pnSequence(); %% to skip the first 10 items
+moving_source=0;
 extra_source_radius=20;
 extra_source_angular_motion=pi;
 extra_source_irradiance=0.5;
@@ -187,8 +188,8 @@ else
     env_signal=ones(nFrames,1);
 end
 
-
-for i=1:nFrames
+k=1; %%index for the enviorment signal
+ for i=1:nFrames
     for j=1:N
         xml.scene.emitter{1,j}.spectrum.Attributes.name = 'irradiance';
         xml.scene.emitter{1,j}.spectrum.Attributes.value = num2str(irradiance*Base(j,i));

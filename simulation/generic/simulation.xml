@@ -28,47 +28,42 @@
    </sensor>
    <emitter type="directional">
       <vector name="direction" x="-0.19612" y="0" z="-0.98058"/>
-      <spectrum name="irradiance" value="0"/>
+      <spectrum name="irradiance" value="0.19951"/>
       <float name="scale" value="1"/>
    </emitter>
    <emitter type="directional">
       <vector name="direction" x="-0.13868" y="-0.13868" z="-0.98058"/>
-      <spectrum name="irradiance" value="0"/>
+      <spectrum name="irradiance" value="0.004497"/>
       <float name="scale" value="1"/>
    </emitter>
    <emitter type="directional">
       <vector name="direction" x="-1.1975e-17" y="-0.19612" z="-0.98058"/>
-      <spectrum name="irradiance" value="0"/>
+      <spectrum name="irradiance" value="0.40644"/>
       <float name="scale" value="1"/>
    </emitter>
    <emitter type="directional">
       <vector name="direction" x="0.13868" y="-0.13868" z="-0.98058"/>
-      <spectrum name="irradiance" value="0"/>
+      <spectrum name="irradiance" value="0.30392"/>
       <float name="scale" value="1"/>
    </emitter>
    <emitter type="directional">
       <vector name="direction" x="0.19612" y="-2.6128e-17" z="-0.98058"/>
-      <spectrum name="irradiance" value="0"/>
+      <spectrum name="irradiance" value="0.46721"/>
       <float name="scale" value="1"/>
    </emitter>
    <emitter type="directional">
       <vector name="direction" x="0.13868" y="0.13868" z="-0.98058"/>
-      <spectrum name="irradiance" value="0"/>
+      <spectrum name="irradiance" value="0.46715"/>
       <float name="scale" value="1"/>
    </emitter>
    <emitter type="directional">
       <vector name="direction" x="3.5926e-17" y="0.19612" z="-0.98058"/>
-      <spectrum name="irradiance" value="0"/>
+      <spectrum name="irradiance" value="0.48268"/>
       <float name="scale" value="1"/>
    </emitter>
    <emitter type="directional">
       <vector name="direction" x="-0.13868" y="0.13868" z="-0.98058"/>
-      <spectrum name="irradiance" value="0.5"/>
-      <float name="scale" value="1"/>
-   </emitter>
-   <emitter type="directional">
-      <vector name="direction" x="19.9992" y="0.17502" z="-50"/>
-      <spectrum name="irradiance" value="0.5"/>
+      <spectrum name="irradiance" value="0.23037"/>
       <float name="scale" value="1"/>
    </emitter>
 </scene>
