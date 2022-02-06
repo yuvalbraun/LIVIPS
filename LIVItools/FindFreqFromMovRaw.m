@@ -51,7 +51,7 @@ if DEBUG==1
    % legend('green','base');
     figure;%(101);
     plot(f,SampleVideoFFTRight)
-    title('Single-Sided Amplitude Spectrum of y(t)')
+    title('Single-Sided Amplitude Spectrum of the Average Pixel Signal y(t)')
     xlabel('Frequency (Hz)')
     ylabel('|Y(f)|')
 end

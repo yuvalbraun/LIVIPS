@@ -104,7 +104,7 @@ rlOpts = struct('nSamples', 1000);
 L = PSRefineLight(L, I, shadow_mask, rlOpts);
 dlmwrite(fullfile(topDir, 'refined_light.txt'), L, 'precision', '%20.16f');
 
-[rho, n] = PhotometricStereo(I, shadow_mask, L);
+%[rho, n] = PhotometricStereo(I, shadow_mask, L);
 Ierr = EvalNEstimateByIError(rho, n, I, shadow_mask, L, evalOpts);
 
 %% Visualize the normal map.

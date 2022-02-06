@@ -6,7 +6,7 @@ clear
 %% close all previous connections
 I=instrfindall;
 if ~isempty(I)
-   fclose(instrfindall);
+     fclose(instrfindall);
     delete(instrfindall);
     clear 
 end
@@ -16,12 +16,12 @@ if isempty(info.AvailableSerialPorts)
 end
 
 %% set properties
-
+ExposureSet=150;
 NumberOfCapturedFrames=398;%Number of frames to capture with the camera
 FPS=398;
 T=1/FPS;
 create_GT=0;
-saveBW=1;
+saveBW=0;
 if saveBW==0
     BW = load('MASK').BW;
 end
@@ -30,11 +30,12 @@ end
 currentDir = fullfile(fileparts(mfilename('fullpath')));
 topDir=extractBefore(currentDir,"scanner");
 imagesDir=topDir + "\PSBox-v0.3.1\data\Objects";
-resultsDir=currentDir+"\results";
 addpath(topDir+"image processing");
 addpath(topDir+"LIVItools");
 addpath(genpath(char(topDir+"PSBox-v0.3.1\")));
 addpath(topDir+"evaluate");
+resultsDir=currentDir+"\results";
+
 
 
 
@@ -44,17 +45,17 @@ addpath(topDir+"evaluate");
 %% initialize the camera and open port
 % input('please turn on all the light at the highest intensity')
 % [capture,vid]=InitCameraRaw;
-[capture,vid,ExposureSet,GainSet]=InitCameraRaw_(NumberOfCapturedFrames);
+[capture,vid,ExposureSet,GainSet]=InitCameraRaw_(NumberOfCapturedFrames,ExposureSet);
 s = serial(info.AvailableSerialPorts{1}, 'BaudRate', 115200);
 fopen(s);
 pause(1);
 
 %% turn on the LEDs, take a sequance of images and turn off the leds
-fprintf(s,'%s',char(192+44));
+fprintf(s,'%s',char(192+30));
 pause(1);
-fprintf(s,'%s',char(128+43));
+fprintf(s,'%s',char(128+36));
 pause(0.9);
-fprintf(s,'%s',char(64+50));
+fprintf(s,'%s',char(64+20));
 pause(1);
 % 
 [ mov ] = double(CaptureMovie_( vid,NumberOfCapturedFrames,0 ))./255;
@@ -136,7 +137,7 @@ xlabel('angular error [degrees]');
 ylabel('number of points');
 title('angular error histogram');
 
-
+save(resultsDir+"\LIVI "+datestr(now,'mm-dd-yyyy HH-MM'),'mov','create_GT','ExposureSet','n_GT','Z_GT','FPS','NumberOfCapturedFrames','BW')
 
 %save('Zmap_LIVI','Z');
 %save('nmap_LIVI','n');

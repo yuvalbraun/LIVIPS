@@ -4,14 +4,13 @@
 % Output :capture is..., vid is videoinput object, ExposureSet, and GainSet
 % are camera parameters.
 %created by Amir Kolaman, edited by Yuval Braun
-function [ capture,vid,ExposureSet,GainSet ] = InitCameraRaw_(NumberOfcapturedFrames)
+function [ capture,vid,ExposureSet,GainSet ] = InitCameraRaw_(NumberOfcapturedFrames,ExposureSet)
 
 %% working with matrix vision bluefox3 
 delete(imaqfind)
 
 vid = videoinput('gentl', 1, 'BayerRG8');
 GainSet=0;
-ExposureSet=200; %%importent!!
 stop(vid);
 src = getselectedsource(vid);
 %vid.ROIPosition = [648 368 256  256];

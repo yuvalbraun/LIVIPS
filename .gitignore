@@ -6,3 +6,5 @@ irrelevant/*
 simulation/generic/results/*
 hardware/*
 PSBox-v0.3.1/data/Objects/*
+
+*.mat

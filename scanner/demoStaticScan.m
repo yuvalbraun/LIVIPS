@@ -13,10 +13,13 @@ if isempty(info.AvailableSerialPorts)
    error('No ports free!');
 end
 %% set parameters
-flesh_no_flesh=1;
-NumberOfCapturedFrames=45;%Number of frames to capture with the camera
-saveBW=1; %% set to 0 if use the old mask
+ExposureSet=300;
+
+flash_no_flash=0;
+NumberOfCapturedFrames=100;%Number of frames to capture with the camera
+saveBW=0; %% set to 0 if use the old mask
 create_GT=0;
+
 if saveBW==0
     BW = load('MASK').BW;
 end
@@ -34,20 +37,24 @@ s = serial(info.AvailableSerialPorts{1}, 'BaudRate', 115200);
 fopen(s);
 pause(1);
 %% set camera parameters
-[capture,vid,ExposureSet,GainSet]=InitCameraRaw_(NumberOfCapturedFrames);
-%% no fl
-if flesh_no_flesh ==1
+[capture,vid,ExposureSet,GainSet]=InitCameraRaw_(NumberOfCapturedFrames,ExposureSet);
+%% no flesh
+if flash_no_flash ==1
     trigger(vid);
-    no_flash = getdata(vid);
-    no_flash=mean(no_flash,4);
+    no_flash_mov = getdata(vid);
+    no_flash=mean(no_flash_mov,4);
 end
 %vid.ReturnedColorSpace ='rgb';
 %% take 3 images for calssic PS.
+fprintf(s,'%s',char(128+56));
+pause(1.1);
 fprintf(s,'%s',char(64+56));
-pause(1);
+pause(1.1);
+fprintf(s,'%s',char(128));
+pause(1.1);
 trigger(vid);
 mov1 = getdata(vid);
-pause(0.1);
+pause(0.2);
 fprintf(s,'%s',char(64));
 pause(1);
 fprintf(s,'%s',char(128+56));
@@ -80,7 +87,7 @@ pause(1);
 fprintf(s,'%s',char(64));
 pause(1);
 fprintf(s,'%s',char(192));
-pause(0.3);
+pause(1);
 
 %% close the port
 fclose(s);
@@ -94,7 +101,7 @@ img4=mean(mov4,4);
 f=figure(1);
 %% substruct the no flash image
 
-if flesh_no_flesh==1
+if flash_no_flash==1
   img_sub1=img1-no_flash;
   img_sub2=img2-no_flash; 
   img_sub3=img3-no_flash;    
@@ -158,7 +165,10 @@ xlabel('angular error [degrees]');
 ylabel('number of points');
 title('angular error histogram');
 
-
-
+if flash_no_flash ==1
+    save(resultsDir+"\static "+datestr(now,'mm-dd-yyyy HH-MM'),'create_GT','NumberOfCapturedFrames','flash_no_flash','no_flash_mov','BW','mov1','mov2','mov3','mov4','ExposureSet')
+else
+    save(resultsDir+"\static "+datestr(now,'mm-dd-yyyy HH-MM'),'create_GT','NumberOfCapturedFrames','flash_no_flash','BW','mov1','mov2','mov3','mov4','ExposureSet')
+end
 %save('Zmap_static_fish_Hlight2','Z');
 %save('nmap_static_fish_Hlight2','n');

@@ -38,7 +38,7 @@ T=1/FPS;
 %% initialize the camera
 % input('please turn on all the light at the highest intensity')
 % [capture,vid]=InitCameraRaw;
-[capture,vid,ExposureSet,GainSet]=InitCameraRaw_(NumberOfCapturedFrames);
+[capture,vid,ExposureSet,GainSet]=InitCameraRaw_(NumberOfCapturedFrames,200);
 s = serial(info.AvailableSerialPorts{1}, 'BaudRate', 115200);
 fopen(s);
 %% turn on all LEDs on
