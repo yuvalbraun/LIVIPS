@@ -23,8 +23,9 @@ p = unwrap(angle(SampleVideoFFT));                  % Phase
 [B,I] = maxk(pks,num_of_freq);
 Location=locs(I);
  if nargin==5
-       Freq=f(PresetLocation+1);
-       Phase=p(PresetLocation+1);
+     PresetLocation=round(NFFT/FrameRate*PresetLocation);
+     Freq=f(PresetLocation+1);
+     Phase=p(PresetLocation+1);
  else
        Freq=f(Location);
        Phase=p(Location);
