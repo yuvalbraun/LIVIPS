@@ -1,3 +1,8 @@
+%% This script perform the Light Invariant PS on parts of a video that has already been taken
+% it performs the algorithem seperatly on each sub-video and evaluates the
+% results compare to GT. It also plot the error as a function of the number
+% of frames
+
 nlist = {50,100,150,200,250,300,350,400,450,500,550,600,650,700,750};
 resav=zeros(length(nlist),1);
 resmed=zeros(length(nlist),1);

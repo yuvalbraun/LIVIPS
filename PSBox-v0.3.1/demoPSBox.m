@@ -95,7 +95,7 @@ lsOpts = struct('nSamples', 1000);
 lambda = PSEstimateLightStrength(I, shadow_mask, L, lsOpts);
 L2 = repmat(lambda', [3 1]) .* L;
 
-[rho, n] = PhotometricStereo(I, shadow_mask, L2);
+%[rho, n] = PhotometricStereo(I, shadow_mask, L2);
 Ierr = EvalNEstimateByIError(rho, n, I, shadow_mask, L2, evalOpts);
 
 %% Refine the lighting matrix.

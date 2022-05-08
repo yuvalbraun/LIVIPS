@@ -2,6 +2,7 @@ function [ capture,vid,ExposureSet,GainSet ] = InitCameraRawFast(NumberOfcapture
 % Capture
 % imaqtool
 %% working with matrix vision bluefox3 
+%created by Amir Kolaman
 delete(imaqfind)
 
 vid = videoinput('gentl', 1, 'BayerRG8');

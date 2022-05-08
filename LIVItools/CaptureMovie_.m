@@ -15,24 +15,13 @@ if FramesToSkip>1
         capture(:,:,ii)=(getdata(vid));
     end
 else
-%     stop(vid);
-%     set(vid,'FramesPerTrigger',NumberOfSamples)
-%     start(vid);
-    % preview(vid);
-    trigger(vid);
-%     mov=double(getdata(vid))./256;
+      trigger(vid);
       mov=getdata(vid);
 
 end
 nFrames=size(mov,4);
 vidHeight=size(mov,1);
 vidWidth=size(mov,2);
-
-% Transfer to the structre movie
-% for k = 1 : nFrames
-% %     mov(k) = im2double(capture(:,:,k));
-%             mov(k).cdata = im2double(capture(:,:,:,k));
-% end
 
 
 end

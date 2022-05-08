@@ -1,4 +1,5 @@
-%% demo of full scan and 3D reconstruction (with 3 sources). The system must be calibrated before
+%% demo of full scan and 3D reconstruction (with 3 sources). The system must be calibrated before %% work only with the FPGA based system described on the appendix
+%% crated by Yuval Braun
 close all
 clc
 clear 
@@ -16,13 +17,13 @@ if isempty(info.AvailableSerialPorts)
 end
 
 %% set properties
-ExposureSet=150;
+ExposureSet=150; %set exposure time [us]
 NumberOfCapturedFrames=398;%Number of frames to capture with the camera
-FPS=398;
+FPS=398; %camera frame rate
 T=1/FPS;
-create_GT=0;
-saveBW=0;
-if saveBW==0
+create_GT=0; %set to 1 to create new GT. 0 to use the previous GT
+saveBW=1; %set to 1 to create new mask. 0 to use the previous mask
+if saveBW==0 
     BW = load('MASK').BW;
 end
 
@@ -48,24 +49,24 @@ resultsDir=currentDir+"\results";
 [capture,vid,ExposureSet,GainSet]=InitCameraRaw_(NumberOfCapturedFrames,ExposureSet);
 s = serial(info.AvailableSerialPorts{1}, 'BaudRate', 115200);
 fopen(s);
-pause(1);
+pause(1.1);
 
 %% turn on the LEDs, take a sequance of images and turn off the leds
 fprintf(s,'%s',char(192+30));
-pause(1);
+pause(1.1);
 fprintf(s,'%s',char(128+36));
-pause(0.9);
+pause(1.1);
 fprintf(s,'%s',char(64+20));
-pause(1);
+pause(1.1);
 % 
 [ mov ] = double(CaptureMovie_( vid,NumberOfCapturedFrames,0 ))./255;
-fprintf(s,'%s',char(64));
-pause(1);
-fprintf(s,'%s',char(128));
-pause(1);
-fprintf(s,'%s',char(192));
-pause(1);
-fclose(s);
+% fprintf(s,'%s',char(64));
+% pause(1);
+% fprintf(s,'%s',char(128));
+% pause(1);
+% fprintf(s,'%s',char(192));
+% pause(1);
+% fclose(s);
 %% perform 3 filters to find 3 images
 f=figure(1);
 [Base,Freq,Location]  = FindFreqFromMovRaw( mov,1,FPS,3 );
@@ -109,6 +110,29 @@ figure;
 demoPSBox;
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+fprintf(s,'%s',char(64));
+pause(1.2);
+fprintf(s,'%s',char(128));
+pause(1.2);
+fprintf(s,'%s',char(192));
+pause(1.1)
+fclose(s);
+
+
 %% save as GT
 if create_GT==1
     save(currentDir+"\GT_face",'n','Z')
@@ -122,22 +146,21 @@ Z_GT=load(currentDir+"\GT_face").Z;
 degrees=calcDegreeError(n_GT,n);
 [H1,W1,D1]=size(degrees);
 figure
-%imagesc(flipud(degrees'));
 him=imshow([flipud(degrees) nan(H1,1); nan(1,W1+1)],colormap(jet(30)));
 set(him, 'AlphaData', ~isnan([flipud(degrees) nan(H1,1); nan(1,W1+1)]))
 shading flat;
 set(gca, 'ydir', 'reverse');
-%title('angular error map');
+title('angular error map');
 colorbar;   
-medianDegree=calcMedian(degrees);
+medianDegree=calcMedian(degrees);bn    
 avDegree=calcSum(degrees);
 figure
 histogram(degrees);
 xlabel('angular error [degrees]');
 ylabel('number of points');
 title('angular error histogram');
-
+%% save the results
 save(resultsDir+"\LIVI "+datestr(now,'mm-dd-yyyy HH-MM'),'mov','create_GT','ExposureSet','n_GT','Z_GT','FPS','NumberOfCapturedFrames','BW')
 
-%save('Zmap_LIVI','Z');
-%save('nmap_LIVI','n');
+% save('Zmap_LIVI','Z');
+% save('nmap_LIVI','n');

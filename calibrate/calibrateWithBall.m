@@ -1,3 +1,5 @@
+%% find the 3 light directions using chrome ball
+% created by Yuval Braun
 %% set properties and open a new serial port
 close all
 clear
@@ -79,6 +81,7 @@ figure;
 %% find and save light directions
  [directions,r]  = find3direction3( FilteredLightDemosaic1,FilteredLightDemosaic2,FilteredLightDemosaic3,MovDemosaicMean );
   directions(2,:) =-directions(2,:);
+ %% update the directions file
  dlmwrite(fullfile(dataDir, 'light_directions.txt'), directions, ...
     'delimiter', ' ', 'precision', '%20.16f');
  dlmwrite(fullfile(dataDir, 'scale.txt'), ballRadius/r);

@@ -1,7 +1,7 @@
 function [ ReconstructedLight1,FilteredDC ] = ReconstructModulatedLightFastRaw2( mov,Base1,DEBUG )
 %% Reconstruct Modulated Light from the sampled video
 % Input : mov is the sampled video, Base1 is the cosine function with the
-% correspond frequancy, DEBUG is for DEBUD mode
+% correspond frequancy, DEBUG is for DEBUG mode
 % Output : ReconstructedLight1 is the filtered video with the corresponding
 % light, FilteredDC is the video with the background light
 %created by Amir Kolaman, edited by Yuval Braun

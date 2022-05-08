@@ -1,3 +1,6 @@
+%% find the 5 light directions using chrome ball
+% created by Yuval Braun
+
 %% set properties and open a new serial port
 close all
 clear

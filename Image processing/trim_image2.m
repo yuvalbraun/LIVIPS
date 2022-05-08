@@ -1,3 +1,4 @@
+%% crop an image acording to reference mask
 function trimedGT =trim_image2(ref,image)
 flag=0;
 for i=1:size(ref,1)

@@ -1,9 +1,9 @@
-%% Analyze frequency of 3 dominants signal
+%% Analyze frequency of N dominants signal
 % Input : mov is a sequance of N images, PresetLocation is currently
 % not used, DEBUG is 1 for debud mode, FrameRate is frames per second
-% Output : Base is 3 vectors contain 3 cosine functions values, 
+% Output : Base is 3 vectors contain N cosine functions values, 
 %created by Amir Kolaman, edited by Yuval Braun
-function [Base,Freq,Location]  = FindFreqFromMovRaw( mov,DEBUG,FrameRate,num_of_freq,PresetLocation )
+function [Base,Freq,Location,Phase]  = FindFreqFromMovRaw( mov,DEBUG,FrameRate,num_of_freq,PresetLocation )
 
 set(0,'DefaultFigureWindowStyle','docked')
 nFrames=size(mov,4);

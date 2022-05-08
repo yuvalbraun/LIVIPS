@@ -1,5 +1,5 @@
 methods=["FNF","LIVI"];
-conditions=["const","flicker"];
+conditions=["const","random"];
 for i=1:length(methods)
     for j=1:length(conditions)
         data=load(methods(i)+"_"+conditions(j)+".mat");
@@ -33,13 +33,13 @@ for i=1:length(methods)
         set(gca, 'ydir', 'reverse');
         hAxis(3)= subplot(length(methods)*length(conditions),3,3+(i-1)*3*length(conditions)+(j-1)*3);
         pos = get( hAxis(3), 'Position' );
-        pos(1)=pos(1)- 0.32;
+        pos(1)=pos(1)- 0.29;
         pos(2)=pos(2)+ (2*i+j-3)*0.022;
         set( hAxis(3), 'Position', pos ) ;
         Z(isnan(n(:,:,1)) | isnan(n(:,:,2)) | isnan(n(:,:,3))) = NaN;
         surf(Z, 'EdgeColor', 'None', 'FaceColor', [0.5 0.5 0.5]);
         axis equal; camlight;
-        view(-75, 30);
+        view(100, 25);
         axis off
       
     end

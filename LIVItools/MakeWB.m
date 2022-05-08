@@ -1,6 +1,7 @@
 function ImWB=MakeWB(Im)
 % this function gets an 8 bit RGB image and turns it into a white balance
-% image
+% image. 
+%created by Amir Kolaman
 Brightness=0.7;
 % 
 Im=double(Im);

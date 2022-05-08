@@ -1,3 +1,4 @@
+%% this function gets an RGB image and replaces all the black pixel with NaN values
 function [Image] = blackToNaN(normalMap)
 N=size(normalMap,1);
 M=size(normalMap,2);

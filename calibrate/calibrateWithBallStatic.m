@@ -1,4 +1,5 @@
-%% calibrate the system using 3 constants light sources
+%% find the light directions using chrome ball and 3 constants light sources
+% created by Yuval Braun
 %% set properties and open a new serial port
 close all
 clear

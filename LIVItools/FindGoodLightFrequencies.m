@@ -11,7 +11,7 @@ function [ Table,FrequencyDelta ] = FindGoodLightFrequencies(CameraFPS, NumberOf
 % MeasuredFrequencyWithoutAliasing=round(round(FrequencyWithoutAliasing/FrequencyDelta)*FrequencyDelta); % frequency measured by the camera 
 % Table(1,:)=PossibleFreqRound;
 % Table(2,:)=MeasuredFrequencyWithoutAliasing;
-
+% created by Amir Kolaman
 FrequencyDelta=(CameraFPS)/(NumberOfCapturedFrames);
 PossibleFreq=(0:50)*FrequencyDelta;
 Table(1,:)=PossibleFreq;

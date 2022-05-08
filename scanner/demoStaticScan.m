@@ -1,3 +1,5 @@
+%% demo of full scan and 3D reconstruction using classic PS (without modulation). The system must be calibrated before %% work only with the FPGA based system described on the appendix
+%% crated by Yuval Braun
 close all
 clc
 clear
@@ -13,13 +15,11 @@ if isempty(info.AvailableSerialPorts)
    error('No ports free!');
 end
 %% set parameters
-ExposureSet=300;
-
-flash_no_flash=0;
+ExposureSet=300; %set exposure time [us]
+flash_no_flash=0; % set to 1 to use flash no flash
 NumberOfCapturedFrames=100;%Number of frames to capture with the camera
-saveBW=0; %% set to 0 if use the old mask
-create_GT=0;
-
+saveBW=1;  % set to 1 to create new mask. 0 to use the previous mask
+create_GT=0;  %set to 1 to create new GT. 0 to use the previous GT
 if saveBW==0
     BW = load('MASK').BW;
 end
@@ -56,13 +56,14 @@ trigger(vid);
 mov1 = getdata(vid);
 pause(0.2);
 fprintf(s,'%s',char(64));
+pause(0.11);
+fprintf(s,'%s',char(64));
 pause(1);
 fprintf(s,'%s',char(128+56));
 pause(1);
 trigger(vid);
 mov2 = getdata(vid);
 pause(0.1);
-fprintf(s,'%s',char(128));
 fprintf(s,'%s',char(128));
 pause(0.8);
 fprintf(s,'%s',char(192+56));
@@ -84,11 +85,13 @@ pause(1);
 
 fprintf(s,'%s',char(128));
 pause(1);
+fprintf(s,'%s',char(128));
+pause(1);
 fprintf(s,'%s',char(64));
 pause(1);
 fprintf(s,'%s',char(192));
 pause(1);
-
+fprintf(s,'%s',char(192));
 %% close the port
 fclose(s);
 
@@ -165,6 +168,7 @@ xlabel('angular error [degrees]');
 ylabel('number of points');
 title('angular error histogram');
 
+%% save the results
 if flash_no_flash ==1
     save(resultsDir+"\static "+datestr(now,'mm-dd-yyyy HH-MM'),'create_GT','NumberOfCapturedFrames','flash_no_flash','no_flash_mov','BW','mov1','mov2','mov3','mov4','ExposureSet')
 else

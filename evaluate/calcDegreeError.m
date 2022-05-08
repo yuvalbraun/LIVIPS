@@ -1,5 +1,5 @@
 function [D] = calcDegreeError(normalMap1,normalMap2)
-%% calc the degrees between two normal maps
+%% calc the angular distance between two normal maps
 %created by Yuval Braun
 N=size(normalMap1,1);
 M=size(normalMap1,2);

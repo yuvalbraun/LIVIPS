@@ -1,4 +1,4 @@
-%% get a normal map and convert it to RGB 
+%% this function gets a normal map and convert it to RGB 
 %created by Yuval Braun
 function [RGB_image] = normalmap_to_RBG(normalMap)
 N=size(normalMap,1);

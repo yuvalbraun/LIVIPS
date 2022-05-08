@@ -1,5 +1,6 @@
 function [Base1,Freq,Location]  = FindLineFreqFromMovRaw( mov,PresetLocation,DEBUG,FrameRate )
 %% Analyze frequency of dominant signal
+% crated by Amir Kolaman
 set(0,'DefaultFigureWindowStyle','docked')
 SampleVideoRow=squeeze((mean(mov,2)));
 nFrames=size(mov,4);

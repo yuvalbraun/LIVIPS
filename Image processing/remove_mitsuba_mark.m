@@ -1,3 +1,4 @@
+%this function removes Mitsuba watermark
 function [image2] = remove_mitsuba_mark(image)
 N=size(image,1);
 M=size(image,2);

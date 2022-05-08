@@ -1,5 +1,6 @@
 function AnalyzeMovieSpectrum( mov,Row,Col,Avg,RolingShutter,FrameRate )
 %% Analyze frequency of dominant signal
+%% Created by Amir Kolaman
 set(0,'DefaultFigureWindowStyle','docked')
 nFrames=size(mov,4);
 SampleVideoG=zeros(1,nFrames);
