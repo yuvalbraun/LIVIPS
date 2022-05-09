@@ -1,6 +1,6 @@
 # LIVIPS (LIPS)
 
-## introduction
+## Introduction
 
 Light Invariant Photometric Stereo (LIPS) is an imaging setup that enables unsynchronized Photometric Stereo (PS) for Lambertian objects based on modulated light sources. Knowing the specific frequency of the modulated light source allows to filter out any other light in the scene. This creates an image that depends only on the particular light source while ignoring the ambient light. Moreover, if the scene is illuminated by multiple modulated sources with different frequencies, repeating this process for every frequency will produce a sequence of images with the corresponding illumination. This sequence is then used as an input to the PS algorithm for 3D reconstruction.
 
