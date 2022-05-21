@@ -4,7 +4,7 @@
 currnetDir = fullfile(fileparts(mfilename('fullpath')));
 topDir=extractBefore(currnetDir,"simulation");
 imagesDir=topDir + "\PSBox-v0.3.1\data\Objects";
-resultsDir=currnetDir+"\results2";
+resultsDir=currnetDir+"\results";
 addpath(topDir+"image processing");
 addpath(topDir+"LIVItools");
 addpath(genpath(char(topDir+"PSBox-v0.3.1\")));
@@ -380,5 +380,5 @@ title('angular error histogram');
 if flicker==1
     save(resultsDir+"\static "+datestr(now,'mm-dd-yyyy HH-MM'),'ambient_light','avDegree','degrees','directions','dutycycle','env_name','flashNoFlash','flicker','flicker_frequency','H','irradiance','medianDegree','n','N','noise_level','number_of_frames','object_name','p','q','R','rho','samples_per_frame','total_frames','W','Z')
 else
-    (resultsDir+"\static "+datestr(now,'mm-dd-yyyy HH-MM'),'ambient_light','avDegree','degrees','directions','dutycycle','env_signal','extra_source_angular_motion','extra_source_irradiance','extra_source_radius','randomsequence','env_name','flashNoFlash','flicker','H','irradiance','medianDegree','moving_source','n','N','noise_level','number_of_frames','object_name','p','pn_interval','q','R','rho','samples_per_frame','total_frames','W','Z')
+    save(resultsDir+"\static "+datestr(now,'mm-dd-yyyy HH-MM'),'ambient_light','avDegree','degrees','directions','dutycycle','env_signal','extra_source_angular_motion','extra_source_irradiance','extra_source_radius','randomsequence','env_name','flashNoFlash','flicker','H','irradiance','medianDegree','moving_source','n','N','noise_level','number_of_frames','object_name','p','pn_interval','q','R','rho','samples_per_frame','total_frames','W','Z')
 end
