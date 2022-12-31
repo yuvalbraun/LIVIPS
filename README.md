@@ -24,5 +24,5 @@ This project is arranged as follows:
 
 - In order to run the code, you need first to install the following Matlab toolboxes: "signal processing toolbox" and "image processing toolbox".
   For using the prototype, you also need to install: "image acquisition toolbox" and "communications toolbox". In order to perform simulations, you need to install "Mitsuba Renderer 0.5".
-- Results of the experiments performed with the prototype can be found in the [link](https://drive.google.com/drive/folders/1jLh_U3X0UWans6-U6xJRCW4SGj4xhrJE?usp=sharing) (including the final results compare to GT and the raw videos). Please copy the "results" directory and locate it in the "scanner" directory.
-- Results of the experiments performed with the simulation can be found in the [link](https://drive.google.com/drive/folders/1wr1_BHnlOb9J3UCbUTiUqF9YhQdvPcys?usp=sharing). Please copy the "results" directory and locate it in the "generic" directory.
+- Results of the experiments performed with the prototype can be found in the [link](https://drive.google.com/drive/folders/1-POsiQLOYsI1csKAG1KikyeKA4a0AmGv?usp=sharing) (including the final results compare to GT and the raw videos). Please copy the "results" directory and locate it in the "scanner" directory.
+- Results of the experiments performed with the simulation can be found in the [link](https://drive.google.com/drive/folders/1mr1HyP68ov7gvw9wHDvEUrJh1m-U8ruM?usp=sharing). Please copy the "results" directory and locate it in the "generic" directory.
